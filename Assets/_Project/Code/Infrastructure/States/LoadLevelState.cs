@@ -11,22 +11,29 @@ namespace Code.Infrastructure.States
         private readonly GameStateMachine _gameStateMachine;
         private readonly SceneLoader _sceneLoader;
         private readonly LoadingProgressPresenter _loadingProgress;
+        private readonly LoadingCurtain _loadingCurtain;
 
-        public LoadLevelState(GameStateMachine gameStateMachine, SceneLoader sceneLoader, LoadingProgressPresenter loadingProgress)
+        public LoadLevelState(GameStateMachine gameStateMachine, SceneLoader sceneLoader, LoadingProgressPresenter loadingProgress, LoadingCurtain loadingCurtain)
         {
             _gameStateMachine = gameStateMachine;
             _sceneLoader = sceneLoader;
             _loadingProgress = loadingProgress;
+            _loadingCurtain = loadingCurtain;
         }
         public async UniTask Enter(string payload)
         {
-            await _sceneLoader.Load(payload, _loadingProgress, EnterLoadLevel);         
+            _loadingCurtain.Show();
+            await _sceneLoader.Load(payload, _loadingProgress, EnterLoadLevel);                
         }
 
         private async void EnterLoadLevel() =>        
             await _gameStateMachine.Enter<GameLoopState>();
 
-        public UniTask Exit() =>
-            default;    
+        public async UniTask Exit()
+        {
+            _loadingCurtain.Hide();
+            await UniTask.Yield();
+        }
+           
     }
 }

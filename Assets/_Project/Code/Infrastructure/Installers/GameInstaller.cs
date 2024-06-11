@@ -8,11 +8,13 @@ namespace Code.Infrastructure.Installers
     {
         public override void InstallBindings()
         {
+            
             BindBootstrapperFactory();
             BindCoroutineRunner();
             BindSceneLoader();
             BindLoadingProgress();
-            BindGameStateMachine();
+            BindLoadingCurtain();
+            BindGameStateMachine();           
         }
 
         private void BindBootstrapperFactory()
@@ -29,6 +31,15 @@ namespace Code.Infrastructure.Installers
                 To<CoroutineRunner>().
                 FromComponentInNewPrefabResource(
                 "Infrastructure/Bootstrapper").
+                AsSingle();
+        }
+
+        private void BindLoadingCurtain()
+        {
+            Container.
+                BindInterfacesAndSelfTo<LoadingCurtain>().
+                FromComponentInNewPrefabResource(
+                "HUD/LoadingCurtain").
                 AsSingle();
         }
 
