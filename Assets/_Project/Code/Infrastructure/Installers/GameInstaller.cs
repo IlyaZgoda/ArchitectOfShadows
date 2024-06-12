@@ -13,6 +13,7 @@ namespace Code.Infrastructure.Installers
             BindSceneLoader();
             BindLoadingProgress();
             BindGameStateMachine();
+            BindQuestSystem();
         }
 
         private void BindBootstrapperFactory()
@@ -49,6 +50,11 @@ namespace Code.Infrastructure.Installers
             Container.
                 BindInterfacesAndSelfTo<LoadingProgressPresenter>().
                 AsSingle();
+        }
+
+        private void BindQuestSystem()
+        {
+            QuestInstaller.Install(Container);
         }
     }
 }
