@@ -11,7 +11,7 @@ using UnityEngine.UI;
 
 namespace Code.Services.Windows
 {
-    public class Window : MonoBehaviour
+    public class InteractionWindow : MonoBehaviour, IWindow
     {
         private TMP_Text _titleText;
         private TMP_Text _descriptionText;
@@ -37,6 +37,7 @@ namespace Code.Services.Windows
             InitializeEventHandlers();
             SubscribeOnResearchButton();
             SubscribeOnCloseButton();
+            SubscribeOnBackButton();
         }
 
         private void InitializeEventHandlers()
@@ -92,7 +93,6 @@ namespace Code.Services.Windows
                     custom.ExecuteCustom();
                 
                 SubscribeOnActionButton();
-                SubscribeOnBackButton();
             }
         }
 

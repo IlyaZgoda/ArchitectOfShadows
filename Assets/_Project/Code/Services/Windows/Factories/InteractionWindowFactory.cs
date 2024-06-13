@@ -5,20 +5,13 @@ using UnityEngine;
 
 namespace Code.Services.Windows.Factories
 {
-    public class WindowFactory : IWindowFactory
+    public class InteractionWindowFactory : IWindowFactory<BaseInteractor>
     {
-        private Window _window;
-
-        public WindowFactory()
-        {
-            Debug.Log("factory installed");
-        }
-
-        public Window CreateWindow(Transform position, BaseInteractor interactor)
+        public IWindow CreateWindow(Transform position, BaseInteractor interactor)
         {
             var prefab = Resources.Load<GameObject>("HUD/Windows/InteractionWindow");
             GameObject dialogueWindow = Object.Instantiate(prefab, position);
-            var window = dialogueWindow.GetComponent<Window>();
+            var window = dialogueWindow.GetComponent<InteractionWindow>();
             window.SetInteractor(interactor);
 
             return window;

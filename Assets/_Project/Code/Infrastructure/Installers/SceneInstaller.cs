@@ -11,14 +11,22 @@ namespace Code.Infrastructure.Installers
     {
         public override void InstallBindings()
         {
-            BindWindowFactory();
+            BindInteractionWindowFactory();
+            BindDialogueWindowFactory();
             BindEventBus();
         }
 
-        private void BindWindowFactory()
+        private void BindInteractionWindowFactory()
         {
             Container.
-                BindInterfacesAndSelfTo<WindowFactory>().
+                BindInterfacesAndSelfTo<InteractionWindowFactory>().
+                AsSingle();
+        }
+
+        private void BindDialogueWindowFactory()
+        {
+            Container.
+                BindInterfacesAndSelfTo<DialogueWindowFactory>().
                 AsSingle();
         }
 
