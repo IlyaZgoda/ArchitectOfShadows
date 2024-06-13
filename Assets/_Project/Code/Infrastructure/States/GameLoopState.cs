@@ -6,17 +6,18 @@ namespace Code.Infrastructure.States
     public class GameLoopState : IState
     {
         [SerializeField] private IQuest testQuest;
-        private QuestSystem _questSystem;
+        //private QuestSystem _questSystem;
 
-        public GameLoopState(QuestSystem questSystem) { 
-            _questSystem = questSystem;
+        public GameLoopState() { 
+            //_questSystem = questSystem;
         }
 
-        public UniTask Enter()
-        {
-            _questSystem.RegisterAllQuests();
-            return UniTask.CompletedTask;
-        }
+        public UniTask Enter() =>
+            default;
+        //{
+            //_questSystem.RegisterAllQuests();
+            //return UniTask.CompletedTask;
+        //}
         
         public UniTask Exit() =>
             default;          
