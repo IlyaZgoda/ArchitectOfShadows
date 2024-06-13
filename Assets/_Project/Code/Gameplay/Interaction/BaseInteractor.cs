@@ -19,7 +19,7 @@ namespace Code.Gameplay.Interaction
 
         public void Interact()
         {
-            _windowFactory.CreateWindow(transform, this);       
+            _windowFactory.CreateWindow(transform, this);
         }
     }
 }

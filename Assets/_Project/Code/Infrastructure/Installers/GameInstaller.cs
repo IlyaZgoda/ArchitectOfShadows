@@ -61,6 +61,11 @@ namespace Code.Infrastructure.Installers
                 BindInterfacesAndSelfTo<LoadingProgressPresenter>().
                 AsSingle();
         }
+
+        private void BindQuestSystem()
+        {
+            QuestInstaller.Install(Container);
+        }
     }
 }
 
