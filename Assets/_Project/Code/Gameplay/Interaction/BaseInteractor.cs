@@ -1,0 +1,25 @@
+using Code.Services.InteractionService;
+using Code.Services.Windows.Factories;
+using Code.StaticData.Windows;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using Zenject;
+
+namespace Code.Gameplay.Interaction
+{
+    public class BaseInteractor : MonoBehaviour, IInteractable
+    {
+        [field: SerializeField] public InteractionConfig Data;
+        private IWindowFactory _windowFactory;
+
+        [Inject]
+        public void Construct(WindowFactory windowFactory) => 
+            _windowFactory = windowFactory;
+
+        public void Interact()
+        {
+            _windowFactory.CreateWindow(transform, this);       
+        }
+    }
+}
