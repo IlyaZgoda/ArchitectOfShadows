@@ -1,3 +1,4 @@
+using Code.Gameplay.Interaction;
 using Code.Services.InteractionService;
 using Code.Services.Windows.Factories;
 using System.Collections;
@@ -7,12 +8,6 @@ using Zenject;
 
 public class Test : MonoBehaviour
 {
-    private IWindowFactory _windowFactory;
-
-    [Inject]
-    public void Construct(WindowFactory windowFactory) =>   
-        _windowFactory = windowFactory;  
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
         Debug.Log("interact");

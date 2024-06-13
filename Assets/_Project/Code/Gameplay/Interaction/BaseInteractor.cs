@@ -11,10 +11,10 @@ namespace Code.Gameplay.Interaction
     public class BaseInteractor : MonoBehaviour, IInteractable
     {
         [field: SerializeField] public InteractionConfig Data;
-        private IWindowFactory _windowFactory;
+        private IWindowFactory<BaseInteractor> _windowFactory;
 
         [Inject]
-        public void Construct(WindowFactory windowFactory) => 
+        public void Construct(InteractionWindowFactory windowFactory) => 
             _windowFactory = windowFactory;
 
         public void Interact()

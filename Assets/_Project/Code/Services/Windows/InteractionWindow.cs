@@ -11,7 +11,7 @@ using UnityEngine.UI;
 
 namespace Code.Services.Windows
 {
-    public class Window : MonoBehaviour
+    public class InteractionWindow : MonoBehaviour, IWindow
     {
         private TMP_Text _titleText;
         private TMP_Text _descriptionText;

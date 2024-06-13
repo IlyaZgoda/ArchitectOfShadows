@@ -1,3 +1,5 @@
+using Code.Gameplay.Interaction;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -5,16 +7,28 @@ using UnityEngine;
 
 namespace Code.Services.Windows
 {
-    public class DialogueWindow : MonoBehaviour
+    public class DialogueWindow : MonoBehaviour, IWindow
     {
         [SerializeField] TextMeshProUGUI text;
-        [SerializeField] string[] lines;
+        private string[] lines;
         [SerializeField] private float speed;
+
+        private TMP_Text _titleText;
         private int index;
+        private NPCInteractor _interactor;
+
+        private void Awake()
+        {
+            _titleText = GetComponentInChildren<TMP_Text>();
+        }
 
         private void Start()
         {
+            SetTitleText();
+
             text.text = string.Empty;
+
+            SetLines();
             StartDialogue();
         }
 
@@ -53,7 +67,7 @@ namespace Code.Services.Windows
             if (index < lines.Length - 1)
             {
                 index++;
-                text.text =string.Empty;
+                text.text = string.Empty;
 
                 StartCoroutine(TypeLine());
             }
@@ -61,5 +75,16 @@ namespace Code.Services.Windows
             else
                 gameObject.SetActive(false);
         }
+
+        public void SetInteractor(NPCInteractor interactor)
+        {
+            _interactor = interactor;
+        }
+
+        private void SetTitleText() =>
+            _titleText.text = _interactor.Data.Name;
+
+        private void SetLines() =>
+            lines = _interactor.Data.Lines;
     }
 }
