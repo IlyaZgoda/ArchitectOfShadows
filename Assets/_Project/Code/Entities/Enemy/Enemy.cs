@@ -4,26 +4,34 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Enemy :MonoBehaviour
+public class Enemy : Health
 {
-    public float Damage = 5f;
-    public float Speed = 10f;
-    public float stopDistance = 1.5f;
-    public float coolDown = 2f;
+    public float Damage = 5f;            // Урон
+    public float Speed = 10f;            // Скорость
+    public float damageDistance = 2f;    // Дистанция для удара
+    public float stopDistance = 1.5f;    // Дистанция для остановки противника
+    public float coolDown = 2f;          // Задержка перед каждым ударом
 
-    private NavMeshAgent agent;
-    private Transform target;
-    private Rigidbody2D rb;
+    public NavMeshAgent agent;
+    public Transform target;
 
-    private float waitCooldown;
-    private float distance;
-    private bool trigger;
+    public float waitCooldown;
+    public float distance;
+    public Vector3 direction;
+    public bool trigger;
 
-    private AttackViralPredator push;
-
-    void Awake()
+    public void getTarget()
     {
-        rb = GetComponent<Rigidbody2D>();
+        var triggerArea = transform.gameObject.GetComponentInChildren<TriggerArea>();
+
+        trigger = triggerArea.isTriggered;
+        target = triggerArea.target;
+        distance = (target.position - transform.position).magnitude;
+        direction = target.position - transform.position;
+    }
+
+    public void startSettings()
+    {
         waitCooldown = Time.time;
 
         agent = GetComponent<NavMeshAgent>();
@@ -31,29 +39,10 @@ public class Enemy :MonoBehaviour
         agent.updateUpAxis = false;
         agent.speed = Speed;
         agent.stoppingDistance = stopDistance;
-
-        push = GetComponent<AttackViralPredator>();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Move()
     {
-        var triggerArea = transform.gameObject.GetComponentInChildren<TriggerArea>();
-
-        trigger = triggerArea.isTriggered;
-        target = triggerArea.target;
-        distance = (target.position - transform.position).magnitude;
-
-        if (distance <= stopDistance && Time.time > waitCooldown) 
-        {
-            //push.PushAway(target, Damage);
-            waitCooldown = CoolDownTime.Cooldown(coolDown);
-        }
-
-        if (trigger)
-        {
-            agent.SetDestination(target.position);
-        }
+        agent.SetDestination(target.position);
     }
-
 }

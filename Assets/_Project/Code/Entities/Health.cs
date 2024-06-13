@@ -6,12 +6,12 @@ public class Health : MonoBehaviour
 {
     public int HealthPoint = 100;
 
-    public void TakeDamage(int damage)
+    public virtual void TakeDamage(int damage)
     {
         HealthPoint -= damage;
         if (HealthPoint <= 0)
         {
-            Die();
+            HealthPoint = 0;
         }
     }
 

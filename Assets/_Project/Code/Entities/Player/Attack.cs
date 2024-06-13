@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEngine.EventSystems.EventTrigger;
 
@@ -17,15 +18,9 @@ public class Attack : MonoBehaviour
 
     void Update()
     {
-
-        mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-        // ”гол между объектами
-        angle = Vector2.Angle(Vector2.right, mousePosition - transform.position); //угол между вектором от объекта к мыше и осью х
-
-        // ћгновенное вращение
-        transform.eulerAngles = new Vector3(0f, 0f, transform.position.y < mousePosition.y ? angle : -angle);
-
+        mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);                                        // ”гол между объектами
+        angle = Vector2.Angle(Vector2.right, mousePosition - transform.position);                                   //угол между вектором от объекта к мыше и осью х
+        transform.eulerAngles = new Vector3(0f, 0f, transform.position.y < mousePosition.y ? angle : -angle);       // ћгновенное вращение
     }
 
     // функци€ возвращает ближайший объект из массива, относительно указанной позиции
@@ -55,20 +50,22 @@ public class Attack : MonoBehaviour
         if (!allTargets)
         {
             GameObject obj = NearTarget(point, colliders);
-            if (obj != null && obj.GetComponent<Health>())
+            if (obj != null && obj.CompareTag("Enemy"))
             {
-                Health hp = obj.GetComponent<Health>();
-                hp.TakeDamage((int)damage);
+                var enemy = obj.gameObject.GetComponent<Enemy>();
+                enemy.TakeDamage((int)damage);
+                if (enemy.HealthPoint <= 0) enemy.Die();
             }
             return;
         }
 
         foreach (Collider2D hit in colliders)
         {
-            if (hit.GetComponent<Health>() && hit.CompareTag("Enemy"))
+            if (hit.GetComponent<Enemy>() && hit.CompareTag("Enemy"))
             {
-                Health hp = hit.GetComponent<Health>();
-                hp.TakeDamage((int)damage);
+                var enemy = hit.gameObject.GetComponent<Enemy>();
+                enemy.TakeDamage((int)damage);
+                if (enemy.HealthPoint <= 0) enemy.Die();
             }
         }
     }

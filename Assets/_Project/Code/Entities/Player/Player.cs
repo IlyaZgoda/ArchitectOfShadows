@@ -4,22 +4,23 @@ using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
-public class Player : MonoBehaviour
+public class Player : Health
 {
-    public float Speed = 5;
-    public float Damage = 10f;
-    public float RadiusAttack = 0.63f;
-    public float attackCooldown = 1;
-    public float blinkCooldown = 1;
-    public float dashCooldown = 1;
-    public float dashSpeed = 5;
-    public bool Splash = false;
+    public float Speed = 5;             // Скорость игрока
+    public float Damage = 10f;          // Дамаг
+    public float RadiusAttack = 0.63f;  // Радиус области атаки
+    public float attackCooldown = 1;    // Перезарядка атаки
+    public float blinkCooldown = 1;     // Перезарядка телепорта
+    public float dashCooldown = 1;      // Перезарядка дэша
+    public float dashSpeed = 5;         // Скорость дэша
+    public float blockingDamage = 1f;   // Время блокировки урона при использовании дэша или получения урона
+    public bool Splash = false;         // Урон по области
+    public bool isDashing = false;      // Проверка на состояние дэша
+    public bool immortal = false;       // Невосприимчивость урона
+    
 
     private TrailRenderer trailRenderer;
-    private bool isDashing = false;
-
     private Vector2 moveVector;
-
     private struct CoolDown
     {
         public float waitAttack;
@@ -27,9 +28,9 @@ public class Player : MonoBehaviour
         public float waitDash;
     };
     private CoolDown wait;
-
     private CapsuleCollider2D capsule;
     private Rigidbody2D rb;
+
 
     void Awake()
     {
@@ -44,13 +45,13 @@ public class Player : MonoBehaviour
         trailRenderer = GetComponent<TrailRenderer>();
     }
 
-    // Interaction
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.E))
         {
          
         }
+        // Выполнение атаки
         if (Time.time > wait.waitAttack)
         {
             if (Input.GetKeyDown(KeyCode.Mouse0))
@@ -59,6 +60,7 @@ public class Player : MonoBehaviour
                 wait.waitAttack = CoolDownTime.Cooldown(attackCooldown);
             }
         }
+        // Выполнение дэша
         if (Time.time > wait.waitDash)
         {
             if (Input.GetKeyDown(KeyCode.Space))
@@ -68,7 +70,8 @@ public class Player : MonoBehaviour
             }
         }
     }
-    // Movement
+
+    // Перемещение игрока
     void FixedUpdate()
     {
         moveVector.x = Input.GetAxis("Horizontal");
@@ -76,17 +79,19 @@ public class Player : MonoBehaviour
         rb.MovePosition(rb.position + moveVector * Speed * Time.deltaTime);
     }
 
+    // Функции активации и деактивации дэша
     private void Dash()
     {
         if (!isDashing)
         {
+            immortal = true;
             isDashing = true;
             Speed *= dashSpeed;
-            OffCollision();
             trailRenderer.emitting = true;
             StartCoroutine(EndDashRoutine());
         }
     }
+
     private IEnumerator EndDashRoutine()
     {
         float dashTime = .2f;
@@ -95,17 +100,28 @@ public class Player : MonoBehaviour
         Speed /= dashSpeed;
         trailRenderer.emitting = false;
         yield return new WaitForSeconds(dashCD);
-        OnCollision();
         isDashing = false;
+        Invoke("offImmortal", blockingDamage);
     }
 
-    private void OnCollision()
+    public override void TakeDamage(int damage)
     {
-        capsule.enabled = true;
+        if (!immortal)
+        {
+            HealthPoint -= damage;
+            if (HealthPoint <= 0)
+            {
+                HealthPoint = 0;
+            }
+            onImmortal();
+         }
     }
 
-    private void OffCollision()
-    {
-        capsule.enabled = false;
+    public void onImmortal()
+    { 
+        immortal = true;
+        Invoke("offImmortal", blockingDamage);
     }
+    public void offImmortal()
+    { immortal = false; }
 }
