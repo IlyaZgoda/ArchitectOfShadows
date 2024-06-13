@@ -19,9 +19,7 @@ namespace Code.Gameplay.Interaction
 
         public void Interact()
         {
-            var new_transform = transform;
-            new_transform.localPosition -= Vector3.up;
-            _windowFactory.CreateWindow(new_transform, this);       
+            _windowFactory.CreateWindow(transform, this);
         }
     }
 }
