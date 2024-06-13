@@ -37,6 +37,7 @@ namespace Code.Services.Windows
             InitializeEventHandlers();
             SubscribeOnResearchButton();
             SubscribeOnCloseButton();
+            SubscribeOnBackButton();
         }
 
         private void InitializeEventHandlers()
@@ -92,7 +93,6 @@ namespace Code.Services.Windows
                     custom.ExecuteCustom();
                 
                 SubscribeOnActionButton();
-                SubscribeOnBackButton();
             }
         }
 
