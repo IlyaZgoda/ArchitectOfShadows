@@ -90,7 +90,10 @@ namespace Code.Services.Windows
                 text.text = custom.GetActionName();
 
                 _onActionButtonClick = () =>
+                {
                     custom.ExecuteCustom();
+                    Destroy(gameObject);
+                };
                 
                 SubscribeOnActionButton();
             }

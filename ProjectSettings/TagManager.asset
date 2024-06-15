@@ -9,6 +9,8 @@ TagManager:
   - Item
   - NPC
   - Enemy
+  - DogAttractor
+  - CorePlatform
   layers:
   - Default
   - TransparentFX

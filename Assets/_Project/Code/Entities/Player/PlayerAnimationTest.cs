@@ -7,11 +7,25 @@ using UnityEngine;
 // удалить как будет готова нормальная реализация
 public class PlayerAnimationTest : MonoBehaviour
 {
+    static Vector2[] DizzleDirections;
+
     private Animator _animator;
+
+    private bool _dizzled;
+    private float _dizzleTimer;
+    private int _dizzleDir;
 
     void Start()
     {
         _animator = GetComponent<Animator>();
+
+        DizzleDirections = new Vector2[]
+        {
+            new Vector2(-1, 0),
+            new Vector2(0, -1),
+            new Vector2(1, 0),
+            new Vector2(0, 1)
+        };
     }
 
     void Update()
@@ -19,6 +33,21 @@ public class PlayerAnimationTest : MonoBehaviour
         Vector2 moveVector;
         moveVector.x = Input.GetAxis("Horizontal");
         moveVector.y = Input.GetAxis("Vertical");
+
+        if(_dizzled)
+        {
+            _dizzleTimer += Time.deltaTime;
+            if (_dizzleTimer >= 0.15f)
+            {
+                _animator.SetTrigger("Stand");
+                _animator.ResetTrigger("Run");
+                _dizzleDir = (_dizzleDir + 1) % 4;
+                _animator.SetFloat("Horiz", DizzleDirections[_dizzleDir].x);
+                _animator.SetFloat("Vert", DizzleDirections[_dizzleDir].y);
+                _dizzleTimer = 0;
+            }
+            return;
+        }
 
         if (moveVector.magnitude > Vector2.kEpsilon)
         {
@@ -38,5 +67,12 @@ public class PlayerAnimationTest : MonoBehaviour
         {
             _animator.SetTrigger("Attack");
         }
+    }
+
+    public void Dizzle(bool enable)
+    {
+        _dizzled = enable;
+        _dizzleTimer = 0;
+        _dizzleDir = 0;
     }
 }
