@@ -21,6 +21,7 @@ namespace Code.Services.Windows
         private NPCInteractor _interactor;
 
         private IWindowFactory<NPCInteractor> _choiceWindowFactory;
+        private Action _callback;
 
         [Inject]
         public void Construct(ChoiceWindowFactory windowFactory) =>
@@ -84,12 +85,13 @@ namespace Code.Services.Windows
             else
             {
                 gameObject.SetActive(false);
-
                 IChoiceInteractable choice;
-                if (_interactor.TryGetComponent(out choice))
-                {
-                    _choiceWindowFactory.CreateWindow(transform.parent, _interactor);
-                }
+
+                if (_interactor.TryGetComponent(out choice)) 
+                    _choiceWindowFactory.CreateWindow(transform.parent, _interactor, _callback);
+                
+                else
+                    _callback?.Invoke();
             }
                 
         }
@@ -97,6 +99,11 @@ namespace Code.Services.Windows
         public void SetInteractor(NPCInteractor interactor)
         {
             _interactor = interactor;
+        }
+
+        public void SetCallback(Action callback = null)
+        {
+            _callback = callback;
         }
 
         private void SetTitleText() =>

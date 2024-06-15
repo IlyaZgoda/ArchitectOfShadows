@@ -20,6 +20,7 @@ namespace Code.Services.Windows
         [SerializeField] private WindowButton _nButton;
 
         IChoiceInteractable _choice;
+        private Action _callback;
 
         private void Awake()
         {
@@ -50,10 +51,15 @@ namespace Code.Services.Windows
             _choice.OnEnd -= Destroy;
 
             Destroy(gameObject);
+
+            _callback?.Invoke();
         }
 
         public void SetInteractor(NPCInteractor interactor) =>
             _interactor = interactor;
+
+        public void SetCallback(Action callback = null) =>
+            _callback = callback;
 
         private void SetTitleText() =>
             _titleText.text = _interactor.Data.Name;

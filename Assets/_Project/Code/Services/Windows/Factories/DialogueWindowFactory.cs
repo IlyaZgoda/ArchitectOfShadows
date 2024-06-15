@@ -1,5 +1,5 @@
 ﻿using Code.Gameplay.Interaction;
-
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,11 +16,14 @@ namespace Code.Services.Windows.Factories
         public DialogueWindowFactory(IInstantiator instantiator) =>
             _instantiator = instantiator;
 
-        public IWindow CreateWindow(Transform position, NPCInteractor interactor)
+        public IWindow CreateWindow(Transform position, NPCInteractor interactor, Action callback = null)
         {
             var window = _instantiator.InstantiatePrefabResourceForComponent<DialogueWindow>("HUD/Windows/DialogueWindow");
+
             window.SetInteractor(interactor);
             window.Set(position);
+            window.SetCallback(callback);
+
             return window;
         }
     }

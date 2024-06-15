@@ -23,6 +23,7 @@ namespace Code.Services.Windows
         [SerializeField] private WindowButton _backButton;
         [SerializeField] private GameObject _tittlePanel;
         [SerializeField] private GameObject _researchPanel;
+        private Action _callback;
 
         private event Action _onResearchButtonClick;
         private event Action _onActionButtonClick;
@@ -77,6 +78,9 @@ namespace Code.Services.Windows
             return (_interactor.TryGetComponent(out custom)) ? custom : null;
 
         }
+
+        public void SetCallback(Action callback = null) =>
+            _callback = callback;
 
         private void SetCustom()
         {
@@ -161,6 +165,7 @@ namespace Code.Services.Windows
         public void Destroy()
         {
             Destroy(gameObject);
+            _callback?.Invoke();
         }
     }
 }

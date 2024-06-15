@@ -15,7 +15,7 @@ public class Test : MonoBehaviour
     {
         if (collision.TryGetComponent(out target))
         {
-            window = target.Interact();
+            window = target.Interact(() => Debug.Log("callback"));
         }
     }
 

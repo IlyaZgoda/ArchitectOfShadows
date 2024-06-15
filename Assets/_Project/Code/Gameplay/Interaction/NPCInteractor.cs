@@ -22,9 +22,10 @@ namespace Code.Gameplay.Interaction
         public void Construct(DialogueWindowFactory windowFactory) =>
             _windowFactory = windowFactory;
 
-        public IWindow Interact()
+        public IWindow Interact(Action callback = null)
         {
-            return _windowFactory.CreateWindow(transform, this);
+            Debug.Log(callback.Target);
+            return _windowFactory.CreateWindow(transform, this, callback);
         }
     }
 }

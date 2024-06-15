@@ -12,12 +12,13 @@ namespace Code.Services.Windows.Factories
 {
     public class ChoiceWindowFactory : IWindowFactory<NPCInteractor>
     {
-        public IWindow CreateWindow(Transform position, NPCInteractor interactor)
+        public IWindow CreateWindow(Transform position, NPCInteractor interactor, Action callback = null)
         {
             var prefab = Resources.Load<GameObject>("HUD/Windows/ChoiceWindow");
             GameObject dialogueWindow = UnityEngine.Object.Instantiate(prefab, position);
             var window = dialogueWindow.GetComponent<ChoiceWindow>();
             window.SetInteractor(interactor);
+            window.SetCallback(callback);
 
             return window;
         }
