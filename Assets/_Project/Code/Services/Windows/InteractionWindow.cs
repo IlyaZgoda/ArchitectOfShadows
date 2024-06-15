@@ -157,5 +157,10 @@ namespace Code.Services.Windows
             UnsubscribeOnCloseButton();
             UnsubscribeOnBackButton();
         }
+
+        public void Destroy()
+        {
+            Destroy(gameObject);
+        }
     }
 }

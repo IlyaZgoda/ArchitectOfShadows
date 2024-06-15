@@ -1,4 +1,5 @@
 using Code.Services.InteractionService;
+using Code.Services.Windows;
 using Code.Services.Windows.Factories;
 using Code.StaticData.Windows;
 using System.Collections;
@@ -17,9 +18,9 @@ namespace Code.Gameplay.Interaction
         public void Construct(InteractionWindowFactory windowFactory) => 
             _windowFactory = windowFactory;
 
-        public void Interact()
+        IWindow IInteractable.Interact()
         {
-            _windowFactory.CreateWindow(transform, this);
+            return _windowFactory.CreateWindow(transform, this);
         }
     }
 }

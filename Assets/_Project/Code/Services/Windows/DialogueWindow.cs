@@ -86,5 +86,10 @@ namespace Code.Services.Windows
 
         private void SetLines() =>
             lines = _interactor.Data.Lines;
+
+        public void Destroy()
+        {
+            Destroy(gameObject);
+        }
     }
 }

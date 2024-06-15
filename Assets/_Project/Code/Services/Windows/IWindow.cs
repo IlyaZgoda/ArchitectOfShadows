@@ -2,5 +2,6 @@
 {
     public interface IWindow
     {
+        void Destroy();
     }
 }
