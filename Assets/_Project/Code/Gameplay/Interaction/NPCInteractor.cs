@@ -24,7 +24,7 @@ namespace Code.Gameplay.Interaction
 
         public IWindow Interact(Action callback = null)
         {
-            Debug.Log(callback.Target);
+            //Debug.Log(callback.Target);
             return _windowFactory.CreateWindow(transform, this, callback);
         }
     }
