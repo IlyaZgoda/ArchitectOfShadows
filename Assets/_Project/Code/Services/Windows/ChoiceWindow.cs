@@ -29,21 +29,25 @@ namespace Code.Services.Windows
         private void Start()
         {
             _interactor.TryGetComponent(out _choice);
+
+            _choice.Init();
             SetTitleText();
             SetQuestion();
 
             _yButton.ClickEvent += _choice.AnswerYes;
             _nButton.ClickEvent += _choice.AnswerNo;
-            _yButton.ClickEvent += Destroy;
-            _nButton.ClickEvent += Destroy;
+            _choice.OnChange += SetQuestion;
+            _choice.OnEnd += Destroy;
+
+            Debug.Log(_titleText.text);
         }
 
         public void Destroy()
         {
             _yButton.ClickEvent -= _choice.AnswerYes;
             _nButton.ClickEvent -= _choice.AnswerNo;
-            _yButton.ClickEvent -= Destroy;
-            _nButton.ClickEvent -= Destroy;
+            _choice.OnChange -= SetQuestion;
+            _choice.OnEnd -= Destroy;
 
             Destroy(gameObject);
         }

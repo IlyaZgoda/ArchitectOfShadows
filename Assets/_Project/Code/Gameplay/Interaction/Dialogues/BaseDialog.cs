@@ -5,11 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Code.Gameplay.Interaction.Dialogues
+namespace Code.Gameplay.Interaction.Dialogues 
 {
-    public class Dialogue9 : BaseDialog
+    public abstract class BaseDialog : MonoBehaviour, IChoiceInteractable
     {
-        public override void Init()
+        protected List<IQuestion> _questionList;
+        private int _current;
+
+        public event Action OnChange;
+        public event Action OnEnd;
+
+        public virtual void Init()
         {
             _questionList = new List<IQuestion>()
             {
@@ -43,5 +49,36 @@ namespace Code.Gameplay.Interaction.Dialogues
                 }
             };
         }
+      
+        public string GetQuestion() =>
+            _questionList[_current].Text;
+
+        public void AnswerYes()
+        {
+            _questionList[_current].OnYesAnswer?.Invoke();
+            NextQuestion();
+        }
+
+        public void AnswerNo()
+        {
+            _questionList[_current].OnNoAnswer?.Invoke();
+            NextQuestion();
+        }
+
+        private void NextQuestion()
+        {
+            _current++;
+
+            if (_current >= _questionList.Count)
+            {
+                Destroy(gameObject);
+                OnEnd?.Invoke();
+            }
+            
+            else           
+                OnChange?.Invoke();
+            
+        }
+
     }
 }
