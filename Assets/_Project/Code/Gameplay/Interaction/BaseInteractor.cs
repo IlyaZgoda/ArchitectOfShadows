@@ -1,6 +1,8 @@
 using Code.Services.InteractionService;
+using Code.Services.Windows;
 using Code.Services.Windows.Factories;
 using Code.StaticData.Windows;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,9 +19,9 @@ namespace Code.Gameplay.Interaction
         public void Construct(InteractionWindowFactory windowFactory) => 
             _windowFactory = windowFactory;
 
-        public void Interact()
+        IWindow IInteractable.Interact(Action callback = null)
         {
-            _windowFactory.CreateWindow(transform, this);
+            return _windowFactory.CreateWindow(transform, this, callback);
         }
     }
 }

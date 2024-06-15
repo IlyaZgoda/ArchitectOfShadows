@@ -5,11 +5,15 @@ using static UnityEngine.GraphicsBuffer;
 
 public class AttackViralPredator : Enemy
 {
+    public float ForcePower = 200f;
+
     private Rigidbody2D rb;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        _animator = GetComponent<Animator>();
+
         startSettings();
     }
 
@@ -20,6 +24,7 @@ public class AttackViralPredator : Enemy
 
         if (distance <= damageDistance && Time.time > waitCooldown && trigger)
         {
+            _animator.SetTrigger("Attack");
             Attack(target);
             waitCooldown = CoolDownTime.Cooldown(coolDown);
         }
@@ -28,12 +33,13 @@ public class AttackViralPredator : Enemy
         if (trigger)
         {
             Move();
+            PlayAnimations();
         }
     }
 
     private void Attack(Transform target)
     {
-        rb.AddForce(direction.normalized * 100, ForceMode2D.Impulse);
+        rb.AddForce(direction.normalized * ForcePower, ForceMode2D.Impulse);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -43,4 +49,5 @@ public class AttackViralPredator : Enemy
             collision.gameObject.GetComponent<Player>().TakeDamage((int)Damage);
         }
     }
+
 }

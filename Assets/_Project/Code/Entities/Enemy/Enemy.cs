@@ -20,6 +20,9 @@ public class Enemy : Health
     public Vector3 direction;
     public bool trigger;
 
+    public Animator _animator;
+
+    
     public void getTarget()
     {
         var triggerArea = transform.gameObject.GetComponentInChildren<TriggerArea>();
@@ -44,5 +47,26 @@ public class Enemy : Health
     public void Move()
     {
         agent.SetDestination(target.position);
+    }
+
+    public void PlayAnimations()
+    {
+        Vector2 moveVector;
+        moveVector.x = agent.velocity.x;
+        moveVector.y = agent.velocity.y;
+
+        if (moveVector.magnitude > Vector2.kEpsilon)
+        {
+            _animator.SetFloat("Horiz", moveVector.x);
+            _animator.SetFloat("Vert", moveVector.y);
+            _animator.SetTrigger("Run");
+            _animator.ResetTrigger("Stand"); //hack
+        }
+        else // moveVector.magnitude == 0
+        {
+            _animator.SetTrigger("Stand");
+            _animator.ResetTrigger("Run"); //hack
+
+        }
     }
 }

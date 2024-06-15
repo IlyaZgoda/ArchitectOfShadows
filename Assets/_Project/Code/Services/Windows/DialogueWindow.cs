@@ -1,9 +1,12 @@
 using Code.Gameplay.Interaction;
+using Code.Gameplay.Interaction.Dialogues;
+using Code.Services.Windows.Factories;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using Zenject;
 
 namespace Code.Services.Windows
 {
@@ -16,6 +19,13 @@ namespace Code.Services.Windows
         private TMP_Text _titleText;
         private int index;
         private NPCInteractor _interactor;
+
+        private IWindowFactory<NPCInteractor> _choiceWindowFactory;
+        private Action _callback;
+
+        [Inject]
+        public void Construct(ChoiceWindowFactory windowFactory) =>
+            _choiceWindowFactory = windowFactory;
 
         private void Awake()
         {
@@ -73,7 +83,17 @@ namespace Code.Services.Windows
             }
 
             else
+            {
                 gameObject.SetActive(false);
+                IChoiceInteractable choice;
+
+                if (_interactor.TryGetComponent(out choice)) 
+                    _choiceWindowFactory.CreateWindow(transform.parent, _interactor, _callback);
+                
+                else
+                    _callback?.Invoke();
+            }
+                
         }
 
         public void SetInteractor(NPCInteractor interactor)
@@ -81,10 +101,27 @@ namespace Code.Services.Windows
             _interactor = interactor;
         }
 
+        public void SetCallback(Action callback = null)
+        {
+            _callback = callback;
+        }
+
         private void SetTitleText() =>
             _titleText.text = _interactor.Data.Name;
 
         private void SetLines() =>
             lines = _interactor.Data.Lines;
+
+        public void Set(Transform position)
+        {
+            gameObject.transform.SetParent(position);
+            gameObject.transform.position = transform.parent.position;
+
+        }
+
+        public void Destroy()
+        {
+            Destroy(gameObject);
+        }
     }
 }
