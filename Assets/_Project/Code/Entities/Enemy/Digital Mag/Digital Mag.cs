@@ -9,10 +9,15 @@ public class DigitalMag : Enemy
     public float laserSpeed = 10f;
 
     private Rigidbody2D rb;
+    private Transform SpawnPoint;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        _animator = rb.GetComponent<Animator>();
+
+        SpawnPoint = transform.GetChild(1);
+
         startSettings();
     }
 
@@ -23,21 +28,29 @@ public class DigitalMag : Enemy
 
         if (distance <= damageDistance && Time.time > waitCooldown && trigger)
         {
-            Attack(target);
-            waitCooldown = CoolDownTime.Cooldown(coolDown);
+            _animator.SetTrigger("Attack");
         }
         if (trigger)
         {
             Move();
+            PlayAnimations();
         }
+    }
+
+    public void StartAttack()
+    {
+        Debug.Log("Attack");
+        Attack(target);
+        waitCooldown = CoolDownTime.Cooldown(coolDown);
     }
 
     private void Attack(Transform target)
     {
-        var obj = Instantiate(Laser, transform);
+        var obj = Instantiate(Laser, SpawnPoint);
         float angle = Vector3.SignedAngle(Vector3.up, target.position - obj.transform.position, Vector3.forward);
         obj.transform.rotation = Quaternion.Euler(0f, 0f, angle+90);
         obj.transform.GetComponent<Rigidbody2D>().AddForce(direction.normalized * laserSpeed, ForceMode2D.Impulse);
+        obj.transform.localScale /= 3;
         
     }
 

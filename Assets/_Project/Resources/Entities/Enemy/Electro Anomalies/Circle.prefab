@@ -173,4 +173,5 @@ MonoBehaviour:
   distance: 0
   direction: {x: 0, y: 0, z: 0}
   trigger: 0
+  _animator: {fileID: 0}
   sphere: {fileID: 7796252657739237371, guid: 47b73b7fb78aa9049898d2c6ad5b50f6, type: 3}

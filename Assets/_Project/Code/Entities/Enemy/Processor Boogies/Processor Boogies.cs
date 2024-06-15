@@ -11,6 +11,8 @@ public class ProcessorBoogies : Enemy
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        _animator = GetComponent<Animator>();
+
         startSettings();
     }
 
@@ -21,19 +23,25 @@ public class ProcessorBoogies : Enemy
 
         if (distance <= damageDistance && Time.time > waitCooldown && trigger)
         {
-            Attack(target);
-            waitCooldown = CoolDownTime.Cooldown(coolDown);
+            _animator.SetTrigger("Attack");
         }
 
 
         if (trigger)
         {
             Move();
+            PlayAnimations();
         }
     }
 
-    private void Attack(Transform target)
+    public void StartAttack()
     {
-        rb.AddForce(direction.normalized * 100, ForceMode2D.Impulse);
+        Debug.Log(1);
+        waitCooldown = CoolDownTime.Cooldown(coolDown);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.transform.CompareTag("Player")) { collision.GetComponent<Player>().TakeDamage((int)Damage); }
     }
 }

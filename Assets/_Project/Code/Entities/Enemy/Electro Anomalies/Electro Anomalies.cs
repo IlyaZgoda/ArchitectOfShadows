@@ -20,8 +20,12 @@ public class ElectroAnomalies : Enemy
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        
         startSettings();
+
         offElectroSphere();
+
+        _animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -31,15 +35,21 @@ public class ElectroAnomalies : Enemy
 
         if (distance <= damageDistance && Time.time > waitCooldown && trigger)
         {
-            Attack(target);
-            waitCooldown = CoolDownTime.Cooldown(coolDown);
+            _animator.SetTrigger("Attack");
         }
 
 
         if (trigger)
         {
+            PlayAnimations();
             Move();
         }
+    }
+
+    public void StartAttack()
+    {
+        Attack(target);
+        waitCooldown = CoolDownTime.Cooldown(coolDown);
     }
 
     private void Attack(Transform target)
