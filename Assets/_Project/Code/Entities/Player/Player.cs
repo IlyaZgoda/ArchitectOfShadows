@@ -31,6 +31,8 @@ public class Player : Health
     public bool isControllable = true;  // ����������
     public bool dashEnabled = false;    // ������� �� ���
     public bool fishingEnabled = false; // �����������
+    public bool deathIsGameOver = false;
+    public CoreRestorer coreRestorer;
     
     public Transform weapon;
 
@@ -53,6 +55,7 @@ public class Player : Health
     private Vector2 pointWhereDialogStarted;
 
     private AudioSource audioSource;
+
     private PlayerAnimation playerAnimation;
 
     private float fallingToVoidTimer;
@@ -76,7 +79,7 @@ public class Player : Health
 
         //spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         Debug.Assert(spriteRenderer != null);
-        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        //spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         audioSource = GetComponentInChildren<AudioSource>();
         playerAnimation = GetComponentInChildren<PlayerAnimation>();
         initialSpriteRendererLayer = spriteRenderer.sortingOrder;
@@ -100,6 +103,12 @@ public class Player : Health
 
             if(fallingToVoidTimer >= 3f)
             {
+                if(deathIsGameOver)
+                {
+                    GameOver();
+                    isFallingToVoid = false;
+                    return;
+                }
                 isFallingToVoid = false;
                 ReviveInCore();
             }
@@ -191,7 +200,7 @@ public class Player : Health
 
         if(currentOpenWindow != null)
         {
-            Debug.Log(currentOpenWindow.IsStillExist());
+            //Debug.Log(currentOpenWindow.IsStillExist());
             if (!currentOpenWindow.IsStillExist())
             {
                 currentOpenWindow = null;
@@ -242,19 +251,62 @@ public class Player : Health
             HealthPoint -= damage;
             if (HealthPoint <= 0)
             {
-                HealthPoint = 0;
+                HealthPoint = 9999;
+                Death();
             }
             onImmortal();
          }
     }
 
+    private IEnumerator RespawnDelayed()
+    {
+        yield return new WaitForSeconds(3f);
+
+        if (deathIsGameOver == false) // возрождаемся
+        {
+            if (transform.position.y > 100f)
+            {
+                ReviveInCore();
+            }
+            else
+            {
+                Respawn();
+            }
+        }
+        else  // game over
+        {
+            GameOver();
+        }
+    }
+
+    public void GameOver()
+    {
+        Debug.Log("GAME OVER");
+    }
+    public void Win()
+    {
+        Debug.Log("WIN");
+        // В ИДЕАЛЕ ЗАДЕРЖКУ 3-5 СЕК А ТО ДАЖЕ АНИМАЦИЮ СМЕРТИ БОССА НЕ УВИДИМ
+    }
+
+    private void Death()
+    {
+        isControllable = false;
+        playerAnimation.Death();
+        StartCoroutine(RespawnDelayed());
+    }
+
     public void onImmortal()
     { 
         immortal = true;
+        spriteRenderer.color = new Color(1, 1, 1, 0.5f);
         Invoke("offImmortal", blockingDamage);
     }
     public void offImmortal()
-    { immortal = false; }
+    {
+        immortal = false;
+        spriteRenderer.color = new Color(1, 1, 1, 1f);
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -291,7 +343,7 @@ public class Player : Health
 
     private void ReviveInCore()
     {
-        GameObject.Find("Core").GetComponent<CoreRestorer>().RestoreCore();
+        coreRestorer.RestoreCore();
 
         //transform.position = new Vector3(21, 134.88f); // �� ������� � ���
         Respawn();
@@ -337,7 +389,8 @@ public class Player : Health
 
         foreach(GameObject enemy in enemies)
         {
-            Destroy(enemy);
+            if (enemy.name != "FisherMan 1")
+                Destroy(enemy);
         }
 
         var spawners = GameObject.FindGameObjectsWithTag("EnemySpawner");
@@ -349,6 +402,8 @@ public class Player : Health
 
         transform.position = savePoint;
         HealthPoint = 100;
+        isControllable = true;
+        playerAnimation.Reborn();
     }
 
     private void EnableFishing()

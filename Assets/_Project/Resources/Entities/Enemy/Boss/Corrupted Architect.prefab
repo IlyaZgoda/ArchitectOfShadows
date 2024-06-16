@@ -639,7 +639,7 @@ GameObject:
   - component: {fileID: 1405270581980995549}
   - component: {fileID: 3703082039651285979}
   - component: {fileID: 6642005958707117845}
-  - component: {fileID: 2911413324256168394}
+  - component: {fileID: 7969508715702636096}
   m_Layer: 0
   m_Name: Corrupted Architect
   m_TagString: Untagged
@@ -657,7 +657,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 144.95674, y: 149.83647, z: 0}
-  m_LocalScale: {x: 11.067, y: 11.067, z: 11.067}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 509727009602047410}
@@ -706,12 +706,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 5
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Sprite: {fileID: 5938383558445483528, guid: f09e4256d030f3d4d9e22a77231864e7, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 6.25, y: 8.75}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -738,7 +738,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &2911413324256168394
+--- !u!114 &7969508715702636096
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -747,10 +747,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 6912494705226815513}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7539a631381bdf64d82ee19fa60c92da, type: 3}
+  m_Script: {fileID: 11500000, guid: 54f0177b424ebd64291d50bc1f453587, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthPoint: 100
 --- !u!1 &9167221383742435836
 GameObject:
   m_ObjectHideFlags: 0

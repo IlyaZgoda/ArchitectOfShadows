@@ -15,7 +15,7 @@ public class Health : MonoBehaviour
             HealthPoint = 0;
         }
 
-        Debug.Log("hit " + gameObject.name);
+        //Debug.Log("hit " + gameObject.name);
         var prefab = Resources.Load<GameObject>("Prefabs/HitEffect");
         GameObject effect = Object.Instantiate(prefab, transform);
     }

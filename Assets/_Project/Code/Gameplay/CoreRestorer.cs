@@ -5,6 +5,8 @@ using UnityEngine;
 public class CoreRestorer : MonoBehaviour
 {
     [SerializeField] List<CorePlatformDisappear> corePlatformsToRestore;
+    [SerializeField] CorruptedArchitect corruptedArchitect;
+    [SerializeField] BossAltar bossAltar;
 
     public void RestoreCore()
     {
@@ -12,5 +14,8 @@ public class CoreRestorer : MonoBehaviour
         {
             platform.RestoreToOriginPosition();
         }
+
+        corruptedArchitect.ResetAll();
+        if(bossAltar.isActiveAndEnabled) bossAltar.ResetAll();
     }
 }

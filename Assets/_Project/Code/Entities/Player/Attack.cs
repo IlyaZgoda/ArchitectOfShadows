@@ -47,7 +47,7 @@ public class Attack : MonoBehaviour
     {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(point, radius);
 
-        Debug.Log(weaponEffect.gameObject.name);
+        //Debug.Log(weaponEffect.gameObject.name);
         weaponEffect.SetTrigger("Smash");
 
         if (!allTargets)
@@ -69,6 +69,10 @@ public class Attack : MonoBehaviour
                 var enemy = hit.gameObject.GetComponent<Enemy>();
                 enemy.TakeDamage((int)damage);
                 if (enemy.HealthPoint <= 0) enemy.Die();
+            }
+            if(hit.GetComponent<Health>() && hit.name == "BossAltar")
+            {
+                hit.GetComponent<Health>().TakeDamage(1);
             }
         }
     }

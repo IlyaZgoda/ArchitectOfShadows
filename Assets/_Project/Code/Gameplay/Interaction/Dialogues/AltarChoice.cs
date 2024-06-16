@@ -12,6 +12,8 @@ namespace Code.Gameplay.Interaction.Dialogues
         [SerializeField] Portal portal;
         [SerializeField] DogFollowing dog;
         [SerializeField] GameObject fisherMan;
+        [SerializeField] GameObject dialogAccept;
+        [SerializeField] GameObject dialogRefuse;
 
         public override void Init()
         {
@@ -20,32 +22,35 @@ namespace Code.Gameplay.Interaction.Dialogues
                 new Question
                 {
                     Text = "Отдать собаку архитектору?",
-                    OnYesAnswer = SpawnImmortalFishman,
-                    OnNoAnswer = SpawnFishmanAndPortal
+                    OnYesAnswer = Accept,
+                    OnNoAnswer = Refuse
 
                 }
             };
         }
 
-        private void SpawnFishmanAndPortal()
+        private void Accept()
         {
-            Debug.Assert(portal != null);
-            Debug.Assert(dog != null);
+            dialogAccept.SetActive(true);
 
-            portal.gameObject.SetActive(true);
-            dog.SetAttractor(portal.transform);
+            //Debug.Assert(portal != null);
+            //Debug.Assert(dog != null);
 
-            fisherMan.SetActive(true);
+            //portal.gameObject.SetActive(true);
+            //dog.SetAttractor(portal.transform);
+
+            //fisherMan.SetActive(true);
         }
 
-        private void SpawnImmortalFishman()
+        private void Refuse()
         {
-            Debug.Assert(dog != null);
+            dialogRefuse.SetActive(true);
+            //Debug.Assert(dog != null);
 
-            dog.gameObject.SetActive(false);
+            //dog.gameObject.SetActive(false);
 
-            fisherMan.SetActive(true);
-            fisherMan.GetComponent<FisherMan>().HealthPoint = 1000;
+            //fisherMan.SetActive(true);
+            //fisherMan.GetComponent<FisherMan>().HealthPoint = 1000;
         }
     }
 }
