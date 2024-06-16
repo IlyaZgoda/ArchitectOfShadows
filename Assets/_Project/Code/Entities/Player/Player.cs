@@ -1,12 +1,25 @@
+using Code.Gameplay.Healing;
 using Code.Services.InteractionService;
+using Code.Services.Observable;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
+using Zenject;
 
 public class Player : Health
 {
+    public override int HealthPoint
+    {
+        get => _healthPoint;
+        protected set
+        {
+            _healthPoint = value;
+            _eventBus?.OnPlayerHealthChange(_healthPoint);
+        }
+    }
+
+    
+
     public float Speed = 5;             // Скорость игрока
     public float Damage = 10f;          // Дамаг
     public float RadiusAttack = 0.63f;  // Радиус области атаки
@@ -45,6 +58,11 @@ public class Player : Health
     private float fallingToVoidTimer;
     private float fallingSpeed;
     private int initialSpriteRendererLayer;
+    private EventBus _eventBus;
+
+    [Inject]
+    public void Construct(EventBus eventBus) =>
+        _eventBus = eventBus;
 
     void Awake()
     {
@@ -121,7 +139,7 @@ public class Player : Health
         {
             Debug.Assert(audioSource != null);
             audioSource.Play();
-        }
+        } 
     }
 
     // Перемещение игрока
@@ -165,7 +183,7 @@ public class Player : Health
     {
         if (!immortal)
         {
-            HealthPoint -= damage;
+            HealthPoint -= damage; 
             if (HealthPoint <= 0)
             {
                 HealthPoint = 0;
@@ -185,10 +203,20 @@ public class Player : Health
     private void OnTriggerEnter2D(Collider2D collision)
     {
         IInteractable target;
+        HealPack healPack;
 
         if (collision.TryGetComponent(out target))
         {
             nearestInteractable = target;
+        }
+
+        if (collision.TryGetComponent(out healPack))
+        {
+            if (HealthPoint + healPack.HealingAmount > 100) 
+                HealthPoint = 100;
+            
+            HealthPoint += healPack.HealingAmount;
+            Destroy(collision.gameObject);
         }
     }
     private void OnTriggerExit2D(Collider2D collision)
