@@ -21,7 +21,7 @@ public class Player : Health
     public bool immortal = false;       // Невосприимчивость урона
     public bool isFallingToVoid = false;// Падени в пустоту (в ядре)
     public bool isControllable = true;  // Управление
-    
+    public Transform weapon;
 
     private TrailRenderer trailRenderer;
     private Vector2 moveVector;
@@ -40,7 +40,6 @@ public class Player : Health
     private IInteractable nearestInteractable; // храним последний интерактбл к которому приблизились
 
     private AudioSource audioSource;
-
     private PlayerAnimation playerAnimation;
 
     private float fallingToVoidTimer;
@@ -51,13 +50,12 @@ public class Player : Health
     {
         rb = GetComponent<Rigidbody2D>();
         capsule = GetComponent<CapsuleCollider2D>();
+        trailRenderer = GetComponent<TrailRenderer>();
 
         CoolDown wait = new CoolDown();
         wait.waitAttack = Time.time;
         wait.waitBlink = Time.time;
         wait.waitDash = Time.time;
-
-        trailRenderer = GetComponent<TrailRenderer>();
 
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         audioSource = GetComponentInChildren<AudioSource>();
@@ -104,7 +102,7 @@ public class Player : Health
             if (Input.GetKeyDown(KeyCode.Mouse0))
             {
                 playerAnimation.Attack();
-                Attack.Action(transform.position, RadiusAttack, Damage, Splash);
+                Attack.Action(weapon.position, RadiusAttack, Damage, Splash);
                 wait.waitAttack = CoolDownTime.Cooldown(attackCooldown);
             }
         }
