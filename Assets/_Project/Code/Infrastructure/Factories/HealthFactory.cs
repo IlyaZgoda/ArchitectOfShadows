@@ -6,13 +6,11 @@ namespace Code.Infrastructure.Factories
 {
     public class HealthFactory
     {
-        public async UniTask<HealPack> CreateHealthPack(Vector3 at)
+        public async UniTask CreateHealthPack(Vector3 at)
         {
             var prefab = await Resources.LoadAsync("Healing/HealthPack");
-            GameObject go = (GameObject)Object.Instantiate(prefab, at, Quaternion.identity);
-            HealPack healPack = go.GetComponent<HealPack>();    
+            Object.Instantiate(prefab, at, Quaternion.identity);
 
-            return healPack;
         }
     }
 }
