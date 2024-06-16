@@ -5,9 +5,7 @@ using UnityEngine.UIElements;
 
 public class Health : MonoBehaviour
 {
-    public int _healthPoint = 100;
-
-    public virtual int HealthPoint { get; protected set; }
+    public int HealthPoint = 100;
 
     public virtual void TakeDamage(int damage)
     {
@@ -17,7 +15,6 @@ public class Health : MonoBehaviour
             HealthPoint = 0;
         }
 
-        //Debug.Log("hit " + gameObject.name);
         var prefab = Resources.Load<GameObject>("Prefabs/HitEffect");
         GameObject effect = Object.Instantiate(prefab, transform);
     }

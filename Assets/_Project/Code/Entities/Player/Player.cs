@@ -1,10 +1,13 @@
+using Code.Gameplay.Healing;
 using Code.Gameplay.Interaction.Dialogues;
 using Code.Services.InteractionService;
+using Code.Services.Observable;
 using Code.Services.Windows;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using Zenject;
 using static UnityEngine.GraphicsBuffer;
 
 // КОДИРОВКА ПОЛЕТЕЛА У КИРИЛЛИЦЫ КОГДА КОНФЛИКТЫ МЕРДЖА РЕШАЛ
@@ -63,6 +66,12 @@ public class Player : Health
     private int initialSpriteRendererLayer;
 
     private Vector2 savePoint;
+
+    private Code.Services.Observable.EventBus _eventBus;
+
+    [Inject]
+    public void Construct(Code.Services.Observable.EventBus eventBus) =>
+        _eventBus = eventBus;
 
     void Awake()
     {
@@ -249,6 +258,8 @@ public class Player : Health
         if (!immortal)
         {
             HealthPoint -= damage;
+            _eventBus.OnPlayerHealthChange(HealthPoint);
+
             if (HealthPoint <= 0)
             {
                 HealthPoint = 9999;
@@ -311,11 +322,23 @@ public class Player : Health
     private void OnTriggerEnter2D(Collider2D collision)
     {
         IInteractable target;
+        HealPack healPack;
 
         if (collision.TryGetComponent(out target))
         {
             nearestInteractable = target;
             nearestInteractableObj = collision.gameObject;
+        }
+
+        if (collision.TryGetComponent(out healPack))
+        {
+            if (HealthPoint + healPack.HealingAmount > 100)
+                HealthPoint = 100;
+
+            HealthPoint += healPack.HealingAmount;
+
+            _eventBus.OnPlayerHealthChange(HealthPoint);
+            Destroy(collision.gameObject);
         }
     }
     private void OnTriggerExit2D(Collider2D collision)
@@ -401,9 +424,10 @@ public class Player : Health
         }
 
         transform.position = savePoint;
-        HealthPoint = 100;
+        HealthPoint = 100;  
         isControllable = true;
         playerAnimation.Reborn();
+        _eventBus.OnPlayerHealthChange(HealthPoint);
     }
 
     private void EnableFishing()
