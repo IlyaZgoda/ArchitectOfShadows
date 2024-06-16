@@ -16,6 +16,7 @@ namespace Code.Infrastructure.Installers
             BindEventBus();
             BindHUDFactory();
             BindHealthFactory();
+            BindEnemyFactory();
             BindCoroutineRunner();
             BindSceneLoader();
             BindLoadingProgress();
@@ -83,6 +84,13 @@ namespace Code.Infrastructure.Installers
         {
             Container.
                 Bind<HealthFactory>().
+                AsSingle();
+        }
+
+        private void BindEnemyFactory()
+        {
+            Container.
+                Bind<EnemyFactory>().
                 AsSingle();
         }
 
