@@ -42,6 +42,8 @@ public class FisherMan : Enemy
     {
         startSettings();
 
+        _animator = GetComponent<Animator>();
+
         spawnTimer = Time.time;
         acidTimer = Time.time;
         slowTimer = Time.time;
@@ -79,6 +81,7 @@ public class FisherMan : Enemy
             if (!isAttack) StartCoroutine(Attack());
 
             Move();
+            PlayAnimations();
         }
     }
 
@@ -111,7 +114,7 @@ public class FisherMan : Enemy
                 if (canAttack(i))
                 {
                     isAttack = true;
-                    Debug.Log(Attacks[i]);
+                    _animator.SetTrigger(Attacks[i]);
                     switch (Attacks[i])
                     {
                         case "Spawn": StartSpawn(); break;
