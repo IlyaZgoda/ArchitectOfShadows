@@ -29,6 +29,8 @@ namespace Code.Services.Windows
         private event Action _onActionButtonClick;
         private event Action _onCloseButtonClick;
         private event Action _onBackButtonClick;
+
+        private bool _closed;
         
         private void Awake()
         {
@@ -39,6 +41,8 @@ namespace Code.Services.Windows
             SubscribeOnResearchButton();
             SubscribeOnCloseButton();
             SubscribeOnBackButton();
+
+            _closed = false;
         }
 
         private void InitializeEventHandlers()
@@ -51,8 +55,7 @@ namespace Code.Services.Windows
                 ActivateBackButton();
             };
 
-            _onCloseButtonClick = () =>
-            Destroy(gameObject);
+            _onCloseButtonClick = Destroy;
 
             _onBackButtonClick = () =>
             {
@@ -97,6 +100,7 @@ namespace Code.Services.Windows
                 {
                     custom.ExecuteCustom();
                     Destroy(gameObject);
+                    _closed = true;
                 };
                 
                 SubscribeOnActionButton();
@@ -169,6 +173,12 @@ namespace Code.Services.Windows
         {
             Destroy(gameObject);
             _callback?.Invoke();
+            _closed = true;
+        }
+
+        public bool IsStillExist()
+        {
+            return !_closed;
         }
     }
 }

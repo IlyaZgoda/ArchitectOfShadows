@@ -1,4 +1,6 @@
+using Code.Gameplay.Interaction.Dialogues;
 using Code.Services.InteractionService;
+using Code.Services.Windows;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -7,6 +9,8 @@ using static UnityEngine.GraphicsBuffer;
 
 public class Player : Health
 {
+    [SerializeField] SpriteRenderer spriteRenderer;
+    [SerializeField] Animator weaponEffect;
     public float Speed = 5;             // Скорость игрока
     public float Damage = 10f;          // Дамаг
     public float RadiusAttack = 0.63f;  // Радиус области атаки
@@ -15,12 +19,15 @@ public class Player : Health
     public float dashCooldown = 1;      // Перезарядка дэша
     public float dashSpeed = 5;         // Скорость дэша
     public float blockingDamage = 1f;   // Время блокировки урона при использовании дэша или получения урона
+    public float closeWindowDistance = 4f;   // Дистанция на которой открытые окна взаимодействия закрываются
     public bool Splash = false;         // Урон по области
     public bool isDashing = false;      // Проверка на состояние дэша
     public bool inDash = false;         // Находится ли игрок непосредственно в дэше
     public bool immortal = false;       // Невосприимчивость урона
     public bool isFallingToVoid = false;// Падени в пустоту (в ядре)
     public bool isControllable = true;  // Управление
+    public bool dashEnabled = false;    // Включен ли дэш
+    public bool fishingEnabled = false; // РЫБААЛКАААА
     
 
     private TrailRenderer trailRenderer;
@@ -35,9 +42,11 @@ public class Player : Health
     private CapsuleCollider2D capsule;
     private Rigidbody2D rb;
 
-    private SpriteRenderer spriteRenderer;
 
-    private IInteractable nearestInteractable; // храним последний интерактбл к которому приблизились
+    private IInteractable nearestInteractable;  // храним последний интерактбл к которому приблизились
+    private GameObject nearestInteractableObj;     // плохо(((((((((( но у меня меньше дня на реализацию так что не судите меня, вы мою жизнь не прожили!!!!
+    private IWindow currentOpenWindow;
+    private Vector2 pointWhereDialogStarted;
 
     private AudioSource audioSource;
 
@@ -46,6 +55,8 @@ public class Player : Health
     private float fallingToVoidTimer;
     private float fallingSpeed;
     private int initialSpriteRendererLayer;
+
+    private Vector2 savePoint;
 
     void Awake()
     {
@@ -59,10 +70,13 @@ public class Player : Health
 
         trailRenderer = GetComponent<TrailRenderer>();
 
-        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        //spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        Debug.Assert(spriteRenderer != null);
         audioSource = GetComponentInChildren<AudioSource>();
         playerAnimation = GetComponentInChildren<PlayerAnimation>();
         initialSpriteRendererLayer = spriteRenderer.sortingOrder;
+
+        savePoint = transform.position;
     }
 
     private void Update()
@@ -93,9 +107,28 @@ public class Player : Health
         // Взаимодействие с interactable
         if (Input.GetKeyDown(KeyCode.E))
         {
-            if(nearestInteractable != null)
+            if(currentOpenWindow == null && nearestInteractable != null)
             {
-                nearestInteractable.Interact();
+                if (nearestInteractableObj.name == "TA_Dialog")     // разговор с архитектором, дает абилки
+                {
+                    SetWindowDestroyWhenPlayerFarAway(nearestInteractable.Interact(EnableDash));
+                }
+                else if (nearestInteractableObj.name == "OW_FinalDialog")   // разговор с старухой, открывате портал в ядро
+                {
+                    SetWindowDestroyWhenPlayerFarAway(nearestInteractable.Interact(OpenPortalToCore));
+                }
+                else if (nearestInteractableObj.name == "SaveInteract")     // "разговор" с сейвом
+                {
+                    SetWindowDestroyWhenPlayerFarAway(nearestInteractable.Interact(UpdateSavePoint));   
+                }
+                else if (nearestInteractableObj.name == "F_AfterKey")       // разговор с рыбаком, дает удочку
+                {
+                    SetWindowDestroyWhenPlayerFarAway(nearestInteractable.Interact(EnableFishing));
+                }
+                else
+                {
+                    SetWindowDestroyWhenPlayerFarAway(nearestInteractable.Interact());
+                }
             }
         }
         // Выполнение атаки
@@ -104,17 +137,22 @@ public class Player : Health
             if (Input.GetKeyDown(KeyCode.Mouse0))
             {
                 playerAnimation.Attack();
-                Attack.Action(transform.position, RadiusAttack, Damage, Splash);
+                //Attack.Action(transform.position, RadiusAttack, Damage, Splash, weaponEffect);
+                Attack.Action(GetComponentInChildren<Attack>().transform.position, RadiusAttack, Damage, Splash, weaponEffect); // temporary
                 wait.waitAttack = CoolDownTime.Cooldown(attackCooldown);
             }
         }
-        // Выполнение дэша
-        if (Time.time > wait.waitDash)
+
+        if (dashEnabled)
         {
-            if (Input.GetKeyDown(KeyCode.Space))
+            // Выполнение дэша
+            if (Time.time > wait.waitDash)
             {
-                Dash();
-                wait.waitDash = CoolDownTime.Cooldown(dashCooldown);
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    Dash();
+                    wait.waitDash = CoolDownTime.Cooldown(dashCooldown);
+                }
             }
         }
 
@@ -123,6 +161,18 @@ public class Player : Health
         {
             Debug.Assert(audioSource != null);
             audioSource.Play();
+        }
+
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            if (transform.position.y > 100f)
+            {
+                ReviveInCore();
+            }
+            else
+            {
+                Respawn();
+            }
         }
     }
 
@@ -134,6 +184,24 @@ public class Player : Health
         moveVector.x = Input.GetAxis("Horizontal");
         moveVector.y = Input.GetAxis("Vertical");
         rb.MovePosition(rb.position + moveVector * Speed * Time.deltaTime);
+
+        if(currentOpenWindow != null)
+        {
+            Debug.Log(currentOpenWindow.IsStillExist());
+            if (!currentOpenWindow.IsStillExist())
+            {
+                currentOpenWindow = null;
+                return;
+            }
+            if (transform.position.y < 100.0f) // если не в ядре - закрываем окошки когда отходим далеко
+            {
+                if (Vector2.Distance(transform.position, pointWhereDialogStarted) >= closeWindowDistance)
+                {
+                    currentOpenWindow.Destroy();
+                    currentOpenWindow = null;
+                }
+            } // в ядре не закрываем окошки - там всего один диалог с архитектором
+        }
     }
 
     // Функции активации и деактивации дэша
@@ -191,6 +259,7 @@ public class Player : Health
         if (collision.TryGetComponent(out target))
         {
             nearestInteractable = target;
+            nearestInteractableObj = collision.gameObject;
         }
     }
     private void OnTriggerExit2D(Collider2D collision)
@@ -218,9 +287,10 @@ public class Player : Health
 
     private void ReviveInCore()
     {
-        GameObject.Find("CoreBackground").GetComponent<CoreRestorer>().RestoreCore();
+        GameObject.Find("Core").GetComponent<CoreRestorer>().RestoreCore();
 
-        transform.position = new Vector3(21, 134.88f); // ДА ХАРДКОД И ЧТО
+        //transform.position = new Vector3(21, 134.88f); // ДА ХАРДКОД И ЧТО
+        Respawn();
 
         var clr = spriteRenderer.color;
         clr.a = 1.0f;
@@ -235,5 +305,50 @@ public class Player : Health
         isControllable = true;
         spriteRenderer.sortingOrder = initialSpriteRendererLayer;
         playerAnimation.Dizzle(false);
+    }
+
+    public void SetWindowDestroyWhenPlayerFarAway(IWindow w)
+    {
+        currentOpenWindow = w;
+        pointWhereDialogStarted = transform.position;
+    }
+
+    public void EnableDash()
+    {
+        dashEnabled = true;
+    }
+    private void OpenPortalToCore()
+    {
+        nearestInteractableObj.GetComponent<PortalToCoreLink>().portalToCore.gameObject.SetActive(true); // ууууу
+    }
+
+    public void UpdateSavePoint()
+    {
+        savePoint = transform.position;
+    }
+
+    private void Respawn()
+    {
+        var enemies = GameObject.FindGameObjectsWithTag("Enemy");
+
+        foreach(GameObject enemy in enemies)
+        {
+            Destroy(enemy);
+        }
+
+        var spawners = GameObject.FindGameObjectsWithTag("EnemySpawner");
+
+        foreach (GameObject spawner in spawners)
+        {
+            spawner.GetComponent<EnemySpawner>().SpawnEnemy();
+        }
+
+        transform.position = savePoint;
+        HealthPoint = 100;
+    }
+
+    private void EnableFishing()
+    {
+        fishingEnabled = true;
     }
 }

@@ -8,7 +8,7 @@ public class InvisibleWalls : MonoBehaviour
     {
         for(int i = 0; i < transform.childCount; i++)
         {
-            transform.GetChild(i).GetComponent<SpriteRenderer>().enabled = false;
+            transform.GetChild(i).GetComponentInChildren<SpriteRenderer>().enabled = false;
         }
     }
 }
