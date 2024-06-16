@@ -7,6 +7,9 @@ using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
+// КОДИРОВКА ПОЛЕТЕЛА У КИРИЛЛИЦЫ КОГДА КОНФЛИКТЫ МЕРДЖА РЕШАЛ
+// ПИЗДЕЦ БЛТЯТЬ!!!! НУ ПОХУЙ КТО ЭТИ КОММЕНТЫ ЧИТАЕТ ТО)))
+
 public class Player : Health
 {
     [SerializeField] SpriteRenderer spriteRenderer;
@@ -139,7 +142,7 @@ public class Player : Health
             if (Input.GetKeyDown(KeyCode.Mouse0))
             {
                 playerAnimation.Attack();
-                Attack.Action(weapon.position, RadiusAttack, Damage, Splash);
+                Attack.Action(weapon.position, RadiusAttack, Damage, Splash, weaponEffect);
                 wait.waitAttack = CoolDownTime.Cooldown(attackCooldown);
             }
         }

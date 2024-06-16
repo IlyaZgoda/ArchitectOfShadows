@@ -11,6 +11,7 @@ namespace Code.Gameplay.Interaction.Dialogues
     {
         [SerializeField] Portal portal;
         [SerializeField] DogFollowing dog;
+        [SerializeField] GameObject fisherMan;
 
         public override void Init()
         {
@@ -33,6 +34,8 @@ namespace Code.Gameplay.Interaction.Dialogues
 
             portal.gameObject.SetActive(true);
             dog.SetAttractor(portal.transform);
+
+            fisherMan.SetActive(true);
         }
 
         private void SpawnImmortalFishman()
@@ -40,6 +43,9 @@ namespace Code.Gameplay.Interaction.Dialogues
             Debug.Assert(dog != null);
 
             dog.gameObject.SetActive(false);
+
+            fisherMan.SetActive(true);
+            fisherMan.GetComponent<FisherMan>().HealthPoint = 1000;
         }
     }
 }
