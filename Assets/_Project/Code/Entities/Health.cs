@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class Health : MonoBehaviour
 {
-    public int HealthPoint = 100;
+    public int _healthPoint = 100;
+
+    public virtual int HealthPoint { get; protected set; }
 
     public virtual void TakeDamage(int damage)
     {

@@ -1,5 +1,8 @@
 using Code.Infrastructure.Factories;
 using Code.Infrastructure.SceneManagement;
+using Code.Services.Observable;
+using Code.UI.Factories;
+using UnityEngine;
 using Zenject;
 
 namespace Code.Infrastructure.Installers
@@ -10,6 +13,8 @@ namespace Code.Infrastructure.Installers
         {
             
             BindBootstrapperFactory();
+            BindEventBus();
+            BindHUDFactory();
             BindCoroutineRunner();
             BindSceneLoader();
             BindLoadingProgress();
@@ -65,6 +70,22 @@ namespace Code.Infrastructure.Installers
         private void BindQuestSystem()
         {
             QuestInstaller.Install(Container);
+        }
+
+        private void BindHUDFactory()
+        {
+            Container.
+                Bind<HUDFactory>().
+                AsSingle();
+        }
+
+        private void BindEventBus()
+        {
+            Container.
+                BindInterfacesAndSelfTo<EventBus>().
+                AsSingle();
+
+            Debug.Log("Installed");
         }
     }
 }

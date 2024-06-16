@@ -1,5 +1,7 @@
+using Code.Gameplay.Healing;
 using Code.Gameplay.Interaction;
 using Code.Services.InteractionService;
+using Code.Services.Observable;
 using Code.Services.Windows;
 using Code.Services.Windows.Factories;
 using System.Collections;
@@ -11,6 +13,7 @@ public class Test : MonoBehaviour
 {
     IInteractable target;
     IWindow window;
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.TryGetComponent(out target))
