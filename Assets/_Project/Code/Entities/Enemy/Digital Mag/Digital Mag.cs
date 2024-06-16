@@ -39,7 +39,6 @@ public class DigitalMag : Enemy
 
     public void StartAttack()
     {
-        Debug.Log("Attack");
         Attack(target);
         waitCooldown = CoolDownTime.Cooldown(coolDown);
     }

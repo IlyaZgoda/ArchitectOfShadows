@@ -41,7 +41,7 @@ public class Player : Health
 
     private AudioSource audioSource;
 
-    private PlayerAnimationTest playerAnimation;
+    private PlayerAnimation playerAnimation;
 
     private float fallingToVoidTimer;
     private float fallingSpeed;
@@ -61,7 +61,7 @@ public class Player : Health
 
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         audioSource = GetComponentInChildren<AudioSource>();
-        playerAnimation = GetComponentInChildren<PlayerAnimationTest>();
+        playerAnimation = GetComponentInChildren<PlayerAnimation>();
         initialSpriteRendererLayer = spriteRenderer.sortingOrder;
     }
 
@@ -103,7 +103,8 @@ public class Player : Health
         {
             if (Input.GetKeyDown(KeyCode.Mouse0))
             {
-                Attack.Action(transform.gameObject.GetComponentInChildren<Attack>().GetComponentInChildren<CircleCollider2D>().transform.position, RadiusAttack, Damage, Splash);
+                playerAnimation.Attack();
+                Attack.Action(transform.position, RadiusAttack, Damage, Splash);
                 wait.waitAttack = CoolDownTime.Cooldown(attackCooldown);
             }
         }

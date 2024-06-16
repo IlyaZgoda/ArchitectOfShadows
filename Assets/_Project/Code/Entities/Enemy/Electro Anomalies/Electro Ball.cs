@@ -20,7 +20,7 @@ public class ElectroBall : Enemy
     {
         if (collision.transform.CompareTag("Player"))
         {
-            collision.transform.GetComponent<Health>().TakeDamage((int)Damage);
+            collision.transform.GetComponent<Player>().TakeDamage((int)Damage);
             Instantiate(sphere, collision.transform.localPosition, collision.transform.rotation);
             Destroy(gameObject);
         }    

@@ -7,6 +7,7 @@ public class ElectroSphere : MonoBehaviour
 {
     public float sphereDamage = 5f;
     public float damageTime = 1.5f;
+    public float time = 3f;
     public bool trap = true;
 
     private float timer;
@@ -16,11 +17,11 @@ public class ElectroSphere : MonoBehaviour
         timer = Time.time;
         if (trap)
         {
-            Invoke("destroySphere", 3f); 
+            Invoke("destroySphere", time); 
         }
     }
 
-    private void destroySphere()
+    public void destroySphere()
     { Destroy(gameObject); }    
 
     private void OnTriggerStay2D(Collider2D coll)

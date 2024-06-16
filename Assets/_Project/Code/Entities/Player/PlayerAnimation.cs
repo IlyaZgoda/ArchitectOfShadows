@@ -5,7 +5,7 @@ using UnityEngine;
 
 //  ласс чисто дл€ проверки анимаций персонажа
 // удалить как будет готова нормальна€ реализаци€
-public class PlayerAnimationTest : MonoBehaviour
+public class PlayerAnimation : MonoBehaviour
 {
     static Vector2[] DizzleDirections;
 
@@ -63,10 +63,11 @@ public class PlayerAnimationTest : MonoBehaviour
             
         }
 
-        if (Input.GetKeyUp(KeyCode.Mouse0))
-        {
-            _animator.SetTrigger("Attack");
-        }
+    }
+
+    public void Attack()
+    {
+        _animator.SetTrigger("Attack");
     }
 
     public void Dizzle(bool enable)
