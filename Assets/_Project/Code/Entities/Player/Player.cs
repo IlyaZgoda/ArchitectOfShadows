@@ -1,39 +1,37 @@
-using Code.Gameplay.Healing;
+using Code.Gameplay.Interaction.Dialogues;
 using Code.Services.InteractionService;
-using Code.Services.Observable;
+using Code.Services.Windows;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
-using Zenject;
+using static UnityEngine.GraphicsBuffer;
+
+// РљРћР”РР РћР’РљРђ РџРћР›Р•РўР•Р›Рђ РЈ РљРР РР›Р›РР¦Р« РљРћР“Р”Рђ РљРћРќР¤Р›РРљРўР« РњР•Р Р”Р–Рђ Р Р•РЁРђР›
+// РџРР—Р”Р•Р¦ Р‘Р›РўРЇРўР¬!!!! РќРЈ РџРћРҐРЈР™ РљРўРћ Р­РўР РљРћРњРњР•РќРўР« Р§РРўРђР•Рў РўРћ)))
 
 public class Player : Health
 {
-    public override int HealthPoint
-    {
-        get => _healthPoint;
-        protected set
-        {
-            _healthPoint = value;
-            _eventBus?.OnPlayerHealthChange(_healthPoint);
-        }
-    }
-
+    [SerializeField] SpriteRenderer spriteRenderer;
+    [SerializeField] Animator weaponEffect;
+    public float Speed = 5;             // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+    public float Damage = 10f;          // пїЅпїЅпїЅпїЅпїЅ
+    public float RadiusAttack = 0.63f;  // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+    public float attackCooldown = 1;    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+    public float blinkCooldown = 1;     // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    public float dashCooldown = 1;      // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
+    public float dashSpeed = 5;         // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
+    public float blockingDamage = 1f;   // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+    public float closeWindowDistance = 4f;   // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    public bool Splash = false;         // пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    public bool isDashing = false;      // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
+    public bool inDash = false;         // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ
+    public bool immortal = false;       // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+    public bool isFallingToVoid = false;// пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅ пїЅпїЅпїЅпїЅ)
+    public bool isControllable = true;  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    public bool dashEnabled = false;    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅ
+    public bool fishingEnabled = false; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     
-
-    public float Speed = 5;             // Скорость игрока
-    public float Damage = 10f;          // Дамаг
-    public float RadiusAttack = 0.63f;  // Радиус области атаки
-    public float attackCooldown = 1;    // Перезарядка атаки
-    public float blinkCooldown = 1;     // Перезарядка телепорта
-    public float dashCooldown = 1;      // Перезарядка дэша
-    public float dashSpeed = 5;         // Скорость дэша
-    public float blockingDamage = 1f;   // Время блокировки урона при использовании дэша или получения урона
-    public bool Splash = false;         // Урон по области
-    public bool isDashing = false;      // Проверка на состояние дэша
-    public bool inDash = false;         // Находится ли игрок непосредственно в дэше
-    public bool immortal = false;       // Невосприимчивость урона
-    public bool isFallingToVoid = false;// Падени в пустоту (в ядре)
-    public bool isControllable = true;  // Управление
     public Transform weapon;
 
     private TrailRenderer trailRenderer;
@@ -48,9 +46,11 @@ public class Player : Health
     private CapsuleCollider2D capsule;
     private Rigidbody2D rb;
 
-    private SpriteRenderer spriteRenderer;
 
-    private IInteractable nearestInteractable; // храним последний интерактбл к которому приблизились
+    private IInteractable nearestInteractable;  // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    private GameObject nearestInteractableObj;     // пїЅпїЅпїЅпїЅпїЅ(((((((((( пїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ, пїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ!!!!
+    private IWindow currentOpenWindow;
+    private Vector2 pointWhereDialogStarted;
 
     private AudioSource audioSource;
     private PlayerAnimation playerAnimation;
@@ -58,11 +58,8 @@ public class Player : Health
     private float fallingToVoidTimer;
     private float fallingSpeed;
     private int initialSpriteRendererLayer;
-    private EventBus _eventBus;
 
-    [Inject]
-    public void Construct(EventBus eventBus) =>
-        _eventBus = eventBus;
+    private Vector2 savePoint;
 
     void Awake()
     {
@@ -75,10 +72,16 @@ public class Player : Health
         wait.waitBlink = Time.time;
         wait.waitDash = Time.time;
 
+        trailRenderer = GetComponent<TrailRenderer>();
+
+        //spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        Debug.Assert(spriteRenderer != null);
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         audioSource = GetComponentInChildren<AudioSource>();
         playerAnimation = GetComponentInChildren<PlayerAnimation>();
         initialSpriteRendererLayer = spriteRenderer.sortingOrder;
+
+        savePoint = transform.position;
     }
 
     private void Update()
@@ -106,43 +109,78 @@ public class Player : Health
 
         if (isControllable == false) return;
 
-        // Взаимодействие с interactable
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ interactable
         if (Input.GetKeyDown(KeyCode.E))
         {
-            if(nearestInteractable != null)
+            if(currentOpenWindow == null && nearestInteractable != null)
             {
-                nearestInteractable.Interact();
+                if (nearestInteractableObj.name == "TA_Dialog")     // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+                {
+                    SetWindowDestroyWhenPlayerFarAway(nearestInteractable.Interact(EnableDash));
+                }
+                else if (nearestInteractableObj.name == "OW_FinalDialog")   // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ
+                {
+                    SetWindowDestroyWhenPlayerFarAway(nearestInteractable.Interact(OpenPortalToCore));
+                }
+                else if (nearestInteractableObj.name == "SaveInteract")     // "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ" пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+                {
+                    SetWindowDestroyWhenPlayerFarAway(nearestInteractable.Interact(UpdateSavePoint));   
+                }
+                else if (nearestInteractableObj.name == "F_AfterKey")       // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+                {
+                    SetWindowDestroyWhenPlayerFarAway(nearestInteractable.Interact(EnableFishing));
+                }
+                else
+                {
+                    SetWindowDestroyWhenPlayerFarAway(nearestInteractable.Interact());
+                }
             }
         }
-        // Выполнение атаки
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         if (Time.time > wait.waitAttack)
         {
             if (Input.GetKeyDown(KeyCode.Mouse0))
             {
                 playerAnimation.Attack();
-                Attack.Action(weapon.position, RadiusAttack, Damage, Splash);
+                Attack.Action(weapon.position, RadiusAttack, Damage, Splash, weaponEffect);
                 wait.waitAttack = CoolDownTime.Cooldown(attackCooldown);
             }
         }
-        // Выполнение дэша
-        if (Time.time > wait.waitDash)
+
+        if (dashEnabled)
         {
-            if (Input.GetKeyDown(KeyCode.Space))
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
+            if (Time.time > wait.waitDash)
             {
-                Dash();
-                wait.waitDash = CoolDownTime.Cooldown(dashCooldown);
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    Dash();
+                    wait.waitDash = CoolDownTime.Cooldown(dashCooldown);
+                }
             }
         }
 
-        // КРЯ
+        // пїЅпїЅпїЅ
         if(Input.GetKeyDown(KeyCode.P))
         {
             Debug.Assert(audioSource != null);
             audioSource.Play();
-        } 
+        }
+
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            if (transform.position.y > 100f)
+            {
+                ReviveInCore();
+            }
+            else
+            {
+                Respawn();
+            }
+        }
     }
 
-    // Перемещение игрока
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     void FixedUpdate()
     {
         if(isControllable == false) return;
@@ -150,9 +188,27 @@ public class Player : Health
         moveVector.x = Input.GetAxis("Horizontal");
         moveVector.y = Input.GetAxis("Vertical");
         rb.MovePosition(rb.position + moveVector * Speed * Time.deltaTime);
+
+        if(currentOpenWindow != null)
+        {
+            Debug.Log(currentOpenWindow.IsStillExist());
+            if (!currentOpenWindow.IsStillExist())
+            {
+                currentOpenWindow = null;
+                return;
+            }
+            if (transform.position.y < 100.0f) // пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+            {
+                if (Vector2.Distance(transform.position, pointWhereDialogStarted) >= closeWindowDistance)
+                {
+                    currentOpenWindow.Destroy();
+                    currentOpenWindow = null;
+                }
+            } // пїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ - пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+        }
     }
 
-    // Функции активации и деактивации дэша
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
     private void Dash()
     {
         if (!isDashing)
@@ -183,7 +239,7 @@ public class Player : Health
     {
         if (!immortal)
         {
-            HealthPoint -= damage; 
+            HealthPoint -= damage;
             if (HealthPoint <= 0)
             {
                 HealthPoint = 0;
@@ -203,20 +259,11 @@ public class Player : Health
     private void OnTriggerEnter2D(Collider2D collision)
     {
         IInteractable target;
-        HealPack healPack;
 
         if (collision.TryGetComponent(out target))
         {
             nearestInteractable = target;
-        }
-
-        if (collision.TryGetComponent(out healPack))
-        {
-            if (HealthPoint + healPack.HealingAmount > 100) 
-                HealthPoint = 100;
-            
-            HealthPoint += healPack.HealingAmount;
-            Destroy(collision.gameObject);
+            nearestInteractableObj = collision.gameObject;
         }
     }
     private void OnTriggerExit2D(Collider2D collision)
@@ -230,7 +277,7 @@ public class Player : Health
         }
     }
 
-    // При падении в пустоту в Ядре
+    // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ
     public void FallInVoid()
     {
         isFallingToVoid = true;
@@ -244,9 +291,10 @@ public class Player : Health
 
     private void ReviveInCore()
     {
-        GameObject.Find("CoreBackground").GetComponent<CoreRestorer>().RestoreCore();
+        GameObject.Find("Core").GetComponent<CoreRestorer>().RestoreCore();
 
-        transform.position = new Vector3(21, 134.88f); // ДА ХАРДКОД И ЧТО
+        //transform.position = new Vector3(21, 134.88f); // пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅ
+        Respawn();
 
         var clr = spriteRenderer.color;
         clr.a = 1.0f;
@@ -261,5 +309,50 @@ public class Player : Health
         isControllable = true;
         spriteRenderer.sortingOrder = initialSpriteRendererLayer;
         playerAnimation.Dizzle(false);
+    }
+
+    public void SetWindowDestroyWhenPlayerFarAway(IWindow w)
+    {
+        currentOpenWindow = w;
+        pointWhereDialogStarted = transform.position;
+    }
+
+    public void EnableDash()
+    {
+        dashEnabled = true;
+    }
+    private void OpenPortalToCore()
+    {
+        nearestInteractableObj.GetComponent<PortalToCoreLink>().portalToCore.gameObject.SetActive(true); // пїЅпїЅпїЅпїЅпїЅ
+    }
+
+    public void UpdateSavePoint()
+    {
+        savePoint = transform.position;
+    }
+
+    private void Respawn()
+    {
+        var enemies = GameObject.FindGameObjectsWithTag("Enemy");
+
+        foreach(GameObject enemy in enemies)
+        {
+            Destroy(enemy);
+        }
+
+        var spawners = GameObject.FindGameObjectsWithTag("EnemySpawner");
+
+        foreach (GameObject spawner in spawners)
+        {
+            spawner.GetComponent<EnemySpawner>().SpawnEnemy();
+        }
+
+        transform.position = savePoint;
+        HealthPoint = 100;
+    }
+
+    private void EnableFishing()
+    {
+        fishingEnabled = true;
     }
 }

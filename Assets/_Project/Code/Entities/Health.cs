@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Health : MonoBehaviour
 {
@@ -15,6 +16,10 @@ public class Health : MonoBehaviour
         {
             HealthPoint = 0;
         }
+
+        Debug.Log("hit " + gameObject.name);
+        var prefab = Resources.Load<GameObject>("Prefabs/HitEffect");
+        GameObject effect = Object.Instantiate(prefab, transform);
     }
 
     public void Die()

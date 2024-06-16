@@ -61,4 +61,12 @@ public class DogFollowing : MonoBehaviour
             _attractor = t;
         }
     }
+
+    private void OnTriggerStay2D(Collider2D other)
+    {
+        if(other.tag == "LakeMoveZone")
+        {
+            transform.position = _attractor.position - new Vector3(2, 0, 0);
+        }
+    }
 }

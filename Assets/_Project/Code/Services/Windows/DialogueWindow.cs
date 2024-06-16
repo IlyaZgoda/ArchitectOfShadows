@@ -23,6 +23,8 @@ namespace Code.Services.Windows
         private IWindowFactory<NPCInteractor> _choiceWindowFactory;
         private Action _callback;
 
+        private bool _closed;
+
         [Inject]
         public void Construct(ChoiceWindowFactory windowFactory) =>
             _choiceWindowFactory = windowFactory;
@@ -30,6 +32,7 @@ namespace Code.Services.Windows
         private void Awake()
         {
             _titleText = GetComponentInChildren<TMP_Text>();
+            _closed = false;
         }
 
         private void Start()
@@ -85,6 +88,7 @@ namespace Code.Services.Windows
             else
             {
                 gameObject.SetActive(false);
+                _closed = true;
                 IChoiceInteractable choice;
 
                 if (_interactor.TryGetComponent(out choice)) 
@@ -121,7 +125,14 @@ namespace Code.Services.Windows
 
         public void Destroy()
         {
+            _callback?.Invoke();
             Destroy(gameObject);
+            _closed = true;
+        }
+
+        public bool IsStillExist()
+        {
+            return !_closed;
         }
     }
 }
