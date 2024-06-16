@@ -154,7 +154,11 @@ public class FisherMan : Enemy
 
     private void SpawnEnemy(Transform target)
     {
-        if (enemyCount < maxEnemy) Instantiate(enemy, transform.localPosition, transform.rotation);
+        if (enemyCount < maxEnemy)
+        {
+            Instantiate(enemy, transform.localPosition, transform.rotation);
+            enemyCount += 1;    
+        };
     }
 
     private void SlowZona()
