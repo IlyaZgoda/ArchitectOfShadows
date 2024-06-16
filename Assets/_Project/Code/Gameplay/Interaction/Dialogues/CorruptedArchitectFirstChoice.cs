@@ -9,6 +9,7 @@ namespace Code.Gameplay.Interaction.Dialogues
 {
     public class CorruptedArchitectFirstChoice : MonoBehaviour, IChoiceInteractable
     {
+        [SerializeField] CorruptedArchitect boss;
 
         protected List<IQuestion> _questionList;
         private int _current;
@@ -71,12 +72,13 @@ namespace Code.Gameplay.Interaction.Dialogues
 
         private void StartFight()
         {
-
+            boss.StartFight();
         }
 
         private void KillPlayer()
         {
-
+            GameObject.Find("Player").GetComponent<Player>().deathIsGameOver = true;
+            boss.AnnihilatePlayer();
         }
     }
 }

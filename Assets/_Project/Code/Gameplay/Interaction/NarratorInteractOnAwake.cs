@@ -7,6 +7,11 @@ using UnityEngine;
 public class NarratorInteractOnAwake : MonoBehaviour
 {
     [SerializeField] bool shouldAppearAtPlayer = false;
+    [SerializeField] bool spawnFisherman = false;
+    [SerializeField] bool makeDogSpawnPortal = false;
+    [SerializeField] GameObject portalToCore;
+    [SerializeField] DogFollowing dog;
+    [SerializeField] GameObject fisherman;
     [SerializeField] Animator narratorAnimator;
 
     private IWindow w;
@@ -14,6 +19,22 @@ public class NarratorInteractOnAwake : MonoBehaviour
     private void HideNarrator()
     {
         narratorAnimator.SetTrigger("Disappear");
+        if(spawnFisherman)
+        {
+            fisherman.SetActive(true);
+            if(!makeDogSpawnPortal)
+            {
+                dog.gameObject.SetActive(false);
+                GameObject.Find("Player").GetComponent<Player>().deathIsGameOver = true;
+                fisherman.GetComponent<FisherMan>().HealthPoint = 1000;
+                fisherman.GetComponent<FisherMan>().Damage = 40;
+            }
+        }
+        if(makeDogSpawnPortal)
+        {
+            portalToCore.gameObject.SetActive(true);
+            dog.SetAttractor(portalToCore.transform);
+        }
     }
 
     private void Awake()

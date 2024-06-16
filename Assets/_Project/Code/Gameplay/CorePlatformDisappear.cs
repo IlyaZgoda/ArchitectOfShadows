@@ -74,6 +74,6 @@ public class CorePlatformDisappear : MonoBehaviour
         clr.a = 1;
         _spriteRenderer.color = clr;
 
-        Debug.Log(gameObject.name);
+        //Debug.Log(gameObject.name);
     }
 }

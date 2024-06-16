@@ -50,6 +50,7 @@ public class DigitalMag : Enemy
         obj.transform.rotation = Quaternion.Euler(0f, 0f, angle+90);
         obj.transform.GetComponent<Rigidbody2D>().AddForce(direction.normalized * laserSpeed, ForceMode2D.Impulse);
         obj.transform.localScale /= 3;
+        obj.GetComponent<LaserTag>().Damage = Damage;
         
     }
 
