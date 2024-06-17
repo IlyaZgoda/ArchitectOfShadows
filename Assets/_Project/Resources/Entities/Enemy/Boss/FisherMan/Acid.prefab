@@ -99,9 +99,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb649922e114cba4291b21599ab753df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Damage: 10
+  Damage: 5
   coolDown: 1.5
-  Distance: 1.5
+  Distance: 2
   time: 5
   acidZona: {fileID: 2010420724, guid: cec2cb7685f737543b3491c958e5435f, type: 3}
 --- !u!58 &4847290196653288981

@@ -6,12 +6,17 @@ using static UnityEngine.GraphicsBuffer;
 
 public class ProcessorBoogies : Enemy
 {
+    public Transform target1;
     private Rigidbody2D rb;
+    private float distance;
+    private bool trigger = false;
+
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         _animator = GetComponent<Animator>();
+
 
         startSettings();
     }
@@ -19,7 +24,9 @@ public class ProcessorBoogies : Enemy
     // Update is called once per frame
     void Update()
     {
-        getTarget();
+
+        distance = (target1.position - transform.position).magnitude;
+        if (distance <= 15f) trigger = true;
 
         if (distance <= damageDistance && Time.time > waitCooldown && trigger)
         {

@@ -163,7 +163,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HealthPoint: 5
-  Damage: 5
+  Damage: 10
   Speed: 10
   damageDistance: 2
   stopDistance: 1.5

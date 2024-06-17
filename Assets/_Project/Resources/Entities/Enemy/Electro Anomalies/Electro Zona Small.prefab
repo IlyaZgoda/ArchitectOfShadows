@@ -135,7 +135,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efe40c1912cc79842a6cae542080e874, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sphereDamage: 5
+  sphereDamage: 10
   damageTime: 2
   time: 3
   trap: 1

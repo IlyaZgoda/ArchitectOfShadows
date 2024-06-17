@@ -199,11 +199,11 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.17
-  m_Speed: 2.5
-  m_Acceleration: 1
+  m_Speed: 2
+  m_Acceleration: 5
   avoidancePriority: 50
-  m_AngularSpeed: 2.5
-  m_StoppingDistance: 2
+  m_AngularSpeed: 100
+  m_StoppingDistance: 3
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
@@ -223,11 +223,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55fe766e592bc864bb1105bd4e025736, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthPoint: 100
-  Damage: 5
-  Speed: 10
-  damageDistance: 2
-  stopDistance: 1.5
+  HealthPoint: 300
+  Damage: 10
+  Speed: 2
+  damageDistance: 3
+  stopDistance: 3
   coolDown: 2
   agent: {fileID: 0}
   target: {fileID: 0}
@@ -236,14 +236,14 @@ MonoBehaviour:
   direction: {x: 0, y: 0, z: 0}
   trigger: 0
   _animator: {fileID: 0}
-  waveDistance: 6
-  waveCoolDown: 3
-  rockSpeed: 10
-  rockDistance: 10
+  waveDistance: 4
+  waveCoolDown: 4
+  rockSpeed: 15
+  rockDistance: 15
   rockCoolDown: 6
   rock: {fileID: 7821700690710738561, guid: d55135c1ea8b33f48bc90de1802f44ff, type: 3}
   slowZonaDistance: 7
-  slowZonaCoolDown: 15
+  slowZonaCoolDown: 20
   slowZona: {fileID: 930544280198783665, guid: dbc21a935d714414bb2f20aab952ee41, type: 3}
 --- !u!95 &6647258250148182661
 Animator:

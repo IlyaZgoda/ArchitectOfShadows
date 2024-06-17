@@ -276,10 +276,10 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.12
-  m_Speed: 10
-  m_Acceleration: 2.5
+  m_Speed: 5
+  m_Acceleration: 5
   avoidancePriority: 99
-  m_AngularSpeed: 5
+  m_AngularSpeed: 50
   m_StoppingDistance: 2
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
@@ -300,9 +300,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e48d5a1e65e8a704f831dbf8fd3aab99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthPoint: 100
-  Damage: 10
-  Speed: 10
+  HealthPoint: 50
+  Damage: 20
+  Speed: 5
   damageDistance: 10
   stopDistance: 2
   coolDown: 1.2
@@ -314,7 +314,7 @@ MonoBehaviour:
   trigger: 0
   _animator: {fileID: 0}
   Laser: {fileID: 3525124584454448777, guid: 6b08521e021a4fb4d8374f6596d8157d, type: 3}
-  laserSpeed: 10
+  laserSpeed: 15
 --- !u!95 &2712016743879660141
 Animator:
   serializedVersion: 5
