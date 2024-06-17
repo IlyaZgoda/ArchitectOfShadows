@@ -22,6 +22,9 @@ public class Player : Health
     [SerializeField] SpriteRenderer spriteRenderer;
     [SerializeField] Animator weaponEffect;
     [SerializeField] GameObject smashSound;
+    [SerializeField] Transform EButton;
+
+
     public float Speed = 5;             // �������� ������
     public float Damage = 10f;          // �����
     public float RadiusAttack = 0.63f;  // ������ ������� �����
@@ -371,6 +374,7 @@ public class Player : Health
         {
             nearestInteractable = target;
             nearestInteractableObj = collision.gameObject;
+            EButton.position = nearestInteractableObj.transform.position;
         }
 
         if (collision.TryGetComponent(out healPack))
@@ -390,8 +394,11 @@ public class Player : Health
 
         if (collision.TryGetComponent(out target))
         {
-            if(nearestInteractable == target)
+            if (nearestInteractable == target)
+            {
                 nearestInteractable = null;
+                EButton.position = new Vector3(-9999, -999);
+            }
         }
     }
 
