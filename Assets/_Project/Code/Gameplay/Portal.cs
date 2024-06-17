@@ -22,7 +22,7 @@ public class Portal : MonoBehaviour
             {
                 if (dog)
                 {
-                    dog.transform.position = teleportPoint.position;
+                    dog.transform.position = teleportPoint.position - new Vector3(1, 0, 0);
                     dog.GetComponent<DogFollowing>().SetAttractor(null);
                 }
             } 

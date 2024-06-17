@@ -11,6 +11,8 @@ TagManager:
   - Enemy
   - DogAttractor
   - CorePlatform
+  - LakeMoveZone
+  - EnemySpawner
   layers:
   - Default
   - TransparentFX

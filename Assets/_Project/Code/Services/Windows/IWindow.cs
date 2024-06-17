@@ -3,5 +3,6 @@
     public interface IWindow
     {
         void Destroy();
+        bool IsStillExist();
     }
 }

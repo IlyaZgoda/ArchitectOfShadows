@@ -70,6 +70,15 @@ public class PlayerAnimation : MonoBehaviour
         _animator.SetTrigger("Attack");
     }
 
+    public void Death()
+    {
+        _animator.SetTrigger("Death");
+    }
+    public void Reborn()
+    {
+        _animator.SetTrigger("Reborn");
+    }
+
     public void Dizzle(bool enable)
     {
         _dizzled = enable;

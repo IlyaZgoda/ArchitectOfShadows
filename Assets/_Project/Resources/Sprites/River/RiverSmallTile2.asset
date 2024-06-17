@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13b75c95f34a00d4e8c04f76b73312e6, type: 3}
+  m_Name: RiverSmallTile2
+  m_EditorClassIdentifier: 
+  m_AnimatedSprites:
+  - {fileID: -525991512410851186, guid: dad87b7dd1f706a45abf527a02c1b9bc, type: 3}
+  - {fileID: 5433431709933586497, guid: dad87b7dd1f706a45abf527a02c1b9bc, type: 3}
+  - {fileID: -9061983115255804296, guid: dad87b7dd1f706a45abf527a02c1b9bc, type: 3}
+  - {fileID: -3845778033679618456, guid: dad87b7dd1f706a45abf527a02c1b9bc, type: 3}
+  m_MinSpeed: 8
+  m_MaxSpeed: 8
+  m_AnimationStartTime: 0
+  m_AnimationStartFrame: 0
+  m_TileColliderType: 0
+  m_TileAnimationFlags: 0

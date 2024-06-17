@@ -19,12 +19,15 @@ namespace Code.Services.Windows
         [SerializeField] private WindowButton _yButton;
         [SerializeField] private WindowButton _nButton;
 
+        private bool _closed;
+
         IChoiceInteractable _choice;
         private Action _callback;
 
         private void Awake()
         {
             _titleText = GetComponentInChildren<TMP_Text>();
+            _closed = false;
         }
 
         private void Start()
@@ -53,6 +56,13 @@ namespace Code.Services.Windows
             Destroy(gameObject);
 
             _callback?.Invoke();
+
+            _closed = true;
+        }
+
+        public bool IsStillExist()
+        {
+            return !_closed;
         }
 
         public void SetInteractor(NPCInteractor interactor) =>

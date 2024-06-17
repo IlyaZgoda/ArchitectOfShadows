@@ -14,8 +14,6 @@ namespace Code.Infrastructure.Installers
             BindChoiceWindowFactory();
             BindInteractionWindowFactory();
             BindDialogueWindowFactory();
-
-            BindEventBus();
         }
 
         private void BindInteractionWindowFactory()
@@ -36,12 +34,6 @@ namespace Code.Infrastructure.Installers
             Container.
                 BindInterfacesAndSelfTo<ChoiceWindowFactory>().
                 AsSingle();
-        }
-        private void BindEventBus()
-        {
-            Container.
-                BindInterfacesAndSelfTo<EventBus>().
-                AsSingle();
-        }
+        }     
     }
 }

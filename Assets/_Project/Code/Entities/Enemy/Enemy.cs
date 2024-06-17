@@ -22,7 +22,6 @@ public class Enemy : Health
 
     public Animator _animator;
 
-    
     public void getTarget()
     {
         var triggerArea = transform.gameObject.GetComponentInChildren<TriggerArea>();
