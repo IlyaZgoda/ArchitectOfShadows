@@ -129,7 +129,8 @@ public class Player : Health
 
             if(fallingToVoidTimer >= 3f)
             {
-                if(deathIsGameOver)
+                _loadingCurtain.Show();
+                if (deathIsGameOver)
                 {
                     GameOver();
                     isFallingToVoid = false;
@@ -204,14 +205,16 @@ public class Player : Health
 
         if(Input.GetKeyDown(KeyCode.R))
         {
-            if (transform.position.y > 100f)
-            {
-                ReviveInCore();
-            }
-            else
-            {
-                Respawn();
-            }
+            HealthPoint = 0;
+            Death();
+            //if (transform.position.y > 100f)
+            //{
+            //    ReviveInCore();
+            //}
+            //else
+            //{
+            //    Respawn();
+            //}
         }
 
         if (Input.GetKeyDown(KeyCode.J))
@@ -298,6 +301,8 @@ public class Player : Health
     {
         yield return new WaitForSeconds(3f);
 
+        _loadingCurtain.Show();
+
         if (deathIsGameOver == false) // возрождаемся
         {
             if (transform.position.y > 100f)
@@ -346,7 +351,6 @@ public class Player : Health
 
     private void Death()
     {
-        _loadingCurtain.Show();
         isControllable = false;
         playerAnimation.Death();
         StartCoroutine(RespawnDelayed());
