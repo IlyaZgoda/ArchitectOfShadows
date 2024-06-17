@@ -38,6 +38,7 @@ namespace Code.Infrastructure.States
 
         private async void EnterLoadLevel()
         {
+            Debug.Log("Load level");
             await _gameStateMachine.Enter<GameLoopState>();
             await InitHUD();
         }       

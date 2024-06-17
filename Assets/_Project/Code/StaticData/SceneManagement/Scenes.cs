@@ -11,5 +11,6 @@ namespace Code.StaticData.SceneManagement
         public const string Initial = "Initial";
         public const string MainMenu = "MainMenu";
         public const string Core = "Core";
+        public const string Credits = "Credits";
     }
 }
