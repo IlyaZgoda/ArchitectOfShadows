@@ -1,8 +1,10 @@
+using Code.Infrastructure.Factories;
 using Code.Services.InteractionService;
 using Cysharp.Threading.Tasks.Triggers;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 namespace Code.Gameplay.Interaction
 {
@@ -12,8 +14,15 @@ namespace Code.Gameplay.Interaction
         [SerializeField] Animator noRodAnimator;
         [SerializeField] Animator noLuckAnimator;
         private string _actionName = "Рыбачить";
+        private HealthFactory _healthFactory;
 
-        public void ExecuteCustom()
+        [Inject]
+        public void Construct(HealthFactory healthFactory) =>
+            _healthFactory = healthFactory;
+        
+
+        
+        public async void ExecuteCustom()
         {
             Debug.Assert(player != null);
 
@@ -27,6 +36,7 @@ namespace Code.Gameplay.Interaction
             if (Random.Range(0.0f, 1.0f) <= 0.35f)
             {
                 Debug.Log("лови аптечку");
+                await _healthFactory.CreateHealthPack(player.transform.position);
             }
             else
             {
