@@ -6,10 +6,8 @@ using UnityEngine;
 public class GuardianoftheForest : Enemy
 {
     [Header("Aтака волной")]
-    public float waveSpeed = 10f;
     public float waveDistance = 6f;
     public float waveCoolDown = 3f;
-    public GameObject wave;
 
     [Header("Бросок камня")]
     public float rockSpeed = 10f;
@@ -39,12 +37,15 @@ public class GuardianoftheForest : Enemy
     {
         startSettings();
 
+
+        _animator = GetComponent<Animator>();
+
         waveTimer = Time.time;
         rockTimer = Time.time;
         slowTimer = Time.time;
         waitCooldown = Time.time;
 
-        Attacks.Add("Wave");
+        Attacks.Add("Attack");
         Attacks.Add("Rock");
         Attacks.Add("SlowZona");
 
@@ -76,12 +77,8 @@ public class GuardianoftheForest : Enemy
             if (!isAttack) StartCoroutine(Attack());
 
             Move();
+            PlayAnimations();
         }
-    }
-
-    public void StartWave()
-    {
-        ShockWave(target);
     }
 
     public void StartRock()
@@ -96,28 +93,19 @@ public class GuardianoftheForest : Enemy
 
     private IEnumerator Attack()
     {
-        if (distance <= damageDistance && Time.time > waitCooldown)
+        for (int i = 0; i < Attacks.Count; i++)
         {
-            Debug.Log("Attack");
-            waitCooldown = CoolDownTime.Cooldown(1);
-        }
-        else
-        {
-            for (int i = 0; i < Attacks.Count; i++)
+            if (canAttack(i))
             {
-                if (canAttack(i))
+                isAttack = true;
+                _animator.SetTrigger(Attacks[i]);
+                switch (Attacks[i])
                 {
-                    isAttack = true;
-                    Debug.Log(Attacks[i]);
-                    switch (Attacks[i])
-                    {
-                        case "Wave": StartWave(); break;
-                        case "Rock": StartRock(); break;
-                        case "SlowZona": StartSlow(); break;
-                    }
-                    Timer[i] = CoolDownTime.Cooldown(CoolDown[i]);
-                    break;
+                    case "Rock": StartRock(); break;
+                    case "SlowZona": StartSlow(); break;
                 }
+                Timer[i] = CoolDownTime.Cooldown(CoolDown[i]);
+                break;
             }
         }
         yield return new WaitForSeconds(1);
@@ -147,14 +135,6 @@ public class GuardianoftheForest : Enemy
         float angle = Vector3.SignedAngle(Vector3.up, target.position - obj.transform.position, Vector3.forward);
         obj.transform.rotation = Quaternion.Euler(0f, 0f, angle-90);
         obj.transform.GetComponent<Rigidbody2D>().AddForce(direction.normalized * rockSpeed, ForceMode2D.Impulse);
-    }
-
-    private void ShockWave(Transform target)
-    {
-        var obj = Instantiate(wave, transform.localPosition, transform.rotation);
-        float angle = Vector3.SignedAngle(Vector3.up, target.position - obj.transform.position, Vector3.forward);
-        obj.transform.rotation = Quaternion.Euler(0f, 0f, angle);
-        obj.transform.GetComponent<Rigidbody2D>().AddForce(direction.normalized * waveSpeed, ForceMode2D.Impulse);
     }
 
     private void SlowZona()

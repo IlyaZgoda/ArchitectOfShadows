@@ -20,9 +20,8 @@ public class FisherMan : Enemy
     public GameObject acid;
 
     [Header("Удар по области")]
-    public float slowZonaDistance = 7f;
-    public float slowZonaCoolDown = 15f;
-    public GameObject slowZona;
+    public float AttackDistance = 7f;
+    public float AttackCoolDown = 15f;
 
     private List<string> Attacks = new List<string>();
     private List<float> CoolDown = new List<float>();
@@ -31,7 +30,7 @@ public class FisherMan : Enemy
 
     private float spawnTimer;
     private float acidTimer;
-    private float slowTimer;
+    private float attackTimer;
 
     private int enemyCount = 0;
     private bool isAttack;
@@ -46,24 +45,24 @@ public class FisherMan : Enemy
 
         spawnTimer = Time.time;
         acidTimer = Time.time;
-        slowTimer = Time.time;
+        attackTimer = Time.time;
         waitCooldown = Time.time;
 
         Attacks.Add("Spawn");
         Attacks.Add("Acid");
-        Attacks.Add("SlowZona");
+        Attacks.Add("Attack");
 
         CoolDown.Add(spawnCoolDown);
         CoolDown.Add(acidCoolDown);
-        CoolDown.Add(slowZonaCoolDown);
+        CoolDown.Add(AttackCoolDown);
 
         Timer.Add(spawnTimer);
         Timer.Add(acidTimer);
-        Timer.Add(slowTimer);
+        Timer.Add(attackTimer);
 
         Distances.Add(spawnDistance);
         Distances.Add(acidDistance);
-        Distances.Add(slowZonaDistance);
+        Distances.Add(AttackDistance);
 
         maxHP = HealthPoint;
         isAttack = false;
@@ -95,44 +94,31 @@ public class FisherMan : Enemy
         Acid(target);
     }
 
-    public void StartSlow()
-    {
-        SlowZona();
-    }
 
     private IEnumerator Attack()
     {
-        if (distance <= damageDistance && Time.time > waitCooldown)
+        for (int i = 0; i < Attacks.Count; i++)
         {
-            Debug.Log("Attack");
-            waitCooldown = CoolDownTime.Cooldown(1);
-        }
-        else
-        {
-            for (int i = 0; i < Attacks.Count; i++)
+            if (canAttack(Attacks[i]))
             {
-                if (canAttack(i))
+                isAttack = true;
+                _animator.SetTrigger(Attacks[i]);
+                switch (Attacks[i])
                 {
-                    isAttack = true;
-                    _animator.SetTrigger(Attacks[i]);
-                    switch (Attacks[i])
-                    {
-                        case "Spawn": StartSpawn(); break;
-                        case "Acid": StartAcid(); break;
-                        case "SlowZona": StartSlow(); break;
-                    }
-                    Timer[i] = CoolDownTime.Cooldown(CoolDown[i]);
-                    break;
+                    case "Spawn": StartSpawn(); break;
+                    case "Acid": StartAcid(); break;
                 }
+                Timer[i] = CoolDownTime.Cooldown(CoolDown[i]);
+                break;
             }
         }
-        yield return new WaitForSeconds(1);
-        isAttack = false;
+    yield return new WaitForSeconds(1);
+    isAttack = false;
     }
 
-    private bool canAttack(int i)
+    private bool canAttack(string i)
     {
-        if (Timer[i] < Time.time && Distances[i] >= distance) return true;
+        if (Timer[Attacks.IndexOf(i)] < Time.time && Distances[Attacks.IndexOf(i)] >= distance) return true;
         return false;
     }
 
@@ -154,6 +140,7 @@ public class FisherMan : Enemy
         obj.transform.rotation = Quaternion.Euler(0f, 0f, angle - 90);
         obj.transform.GetComponent<Rigidbody2D>().AddForce(direction.normalized * acidSpeed, ForceMode2D.Impulse);
     }
+   
 
     private void SpawnEnemy(Transform target)
     {
@@ -162,11 +149,6 @@ public class FisherMan : Enemy
             Instantiate(enemy, transform.localPosition, transform.rotation);
             enemyCount += 1;    
         };
-    }
-
-    private void SlowZona()
-    {
-        var obj = Instantiate(slowZona, transform.localPosition, transform.rotation);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
