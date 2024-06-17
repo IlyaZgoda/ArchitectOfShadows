@@ -1,5 +1,6 @@
 using Code.Gameplay.Healing;
 using Code.Gameplay.Interaction.Dialogues;
+using Code.Infrastructure;
 using Code.Services.InteractionService;
 using Code.Services.Observable;
 using Code.Services.Windows;
@@ -68,10 +69,16 @@ public class Player : Health
     private Vector2 savePoint;
 
     private Code.Services.Observable.EventBus _eventBus;
+    private LoadingCurtain _loadingCurtain;
 
     [Inject]
-    public void Construct(Code.Services.Observable.EventBus eventBus) =>
+    public void Construct(Code.Services.Observable.EventBus eventBus, LoadingCurtain loadingCurtain)
+    {
         _eventBus = eventBus;
+        _loadingCurtain = loadingCurtain;
+    }
+
+        
 
     void Awake()
     {
@@ -302,9 +309,11 @@ public class Player : Health
 
     private void Death()
     {
+        _loadingCurtain.Show();
         isControllable = false;
         playerAnimation.Death();
         StartCoroutine(RespawnDelayed());
+        
     }
 
     public void onImmortal()
@@ -428,6 +437,7 @@ public class Player : Health
         isControllable = true;
         playerAnimation.Reborn();
         _eventBus.OnPlayerHealthChange(HealthPoint);
+        _loadingCurtain.Hide();
     }
 
     private void EnableFishing()
