@@ -1,5 +1,8 @@
 using Code.Infrastructure.Factories;
 using Code.Infrastructure.SceneManagement;
+using Code.Services.Observable;
+using Code.UI.Factories;
+using UnityEngine;
 using Zenject;
 
 namespace Code.Infrastructure.Installers
@@ -8,11 +11,17 @@ namespace Code.Infrastructure.Installers
     {
         public override void InstallBindings()
         {
+            
             BindBootstrapperFactory();
+            BindEventBus();
+            BindHUDFactory();
+            BindHealthFactory();
+            BindEnemyFactory();
             BindCoroutineRunner();
             BindSceneLoader();
             BindLoadingProgress();
-            BindGameStateMachine();
+            BindLoadingCurtain();
+            BindGameStateMachine();           
         }
 
         private void BindBootstrapperFactory()
@@ -29,6 +38,15 @@ namespace Code.Infrastructure.Installers
                 To<CoroutineRunner>().
                 FromComponentInNewPrefabResource(
                 "Infrastructure/Bootstrapper").
+                AsSingle();
+        }
+
+        private void BindLoadingCurtain()
+        {
+            Container.
+                BindInterfacesAndSelfTo<LoadingCurtain>().
+                FromComponentInNewPrefabResource(
+                "HUD/LoadingCurtain").
                 AsSingle();
         }
 
@@ -49,6 +67,40 @@ namespace Code.Infrastructure.Installers
             Container.
                 BindInterfacesAndSelfTo<LoadingProgressPresenter>().
                 AsSingle();
+        }
+
+        private void BindQuestSystem()
+        {
+            QuestInstaller.Install(Container);
+        }
+
+        private void BindHUDFactory()
+        {
+            Container.
+                Bind<HUDFactory>().
+                AsSingle();
+        }
+        private void BindHealthFactory()
+        {
+            Container.
+                Bind<HealthFactory>().
+                AsSingle();
+        }
+
+        private void BindEnemyFactory()
+        {
+            Container.
+                Bind<EnemyFactory>().
+                AsSingle();
+        }
+
+        private void BindEventBus()
+        {
+            Container.
+                BindInterfacesAndSelfTo<EventBus>().
+                AsSingle();
+
+            Debug.Log("Installed");
         }
     }
 }
