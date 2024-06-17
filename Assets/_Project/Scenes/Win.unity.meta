@@ -1,6 +1,11 @@
 fileFormatVersion: 2
-guid: 284c619faf1a08d469d6f18d7eb9215d
+<<<<<<<< HEAD:Assets/_Project/Scenes/Win.unity.meta
+guid: 1a26fd9fa1ca0184ebeb3958acbff5d2
 DefaultImporter:
+========
+guid: 7469a97917bbffa489a88b389248a11a
+PrefabImporter:
+>>>>>>>> Lysenko:Assets/_Project/Resources/Entities/Enemy/Boss/Guardian of the Forest/Guardian of the Forest 1.prefab.meta
   externalObjects: {}
   userData: 
   assetBundleName: 

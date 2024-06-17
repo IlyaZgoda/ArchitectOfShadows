@@ -1,5 +1,10 @@
 fileFormatVersion: 2
-guid: 0e9f8270a7042db4582497516b3324e3
+<<<<<<<< HEAD:Assets/_Project/Scenes/GameOver.unity.meta
+guid: b6a318449ed82fb43ab28ecd9c645f3b
+========
+guid: 34bf8d67fed2cc64e9b2ef0d498e4e61
+folderAsset: yes
+>>>>>>>> Lysenko:Assets/_Project/Resources/Animations/Guardian.meta
 DefaultImporter:
   externalObjects: {}
   userData: 
