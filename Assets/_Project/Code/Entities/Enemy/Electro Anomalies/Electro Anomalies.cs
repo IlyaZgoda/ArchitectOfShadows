@@ -65,6 +65,9 @@ public class ElectroAnomalies : Enemy
         obj.transform.rotation = Quaternion.Euler(0f, 0f, angle + 90);
         obj.transform.GetComponent<Rigidbody2D>().AddForce(direction.normalized * ballSpeed, ForceMode2D.Impulse);
 
+        var electricSound = Resources.Load<GameObject>("Prefabs/Sounds/Sound_Electric");
+        GameObject sound = Instantiate(electricSound, transform.position, Quaternion.identity);
+
     }
     private void DestroyArea()
     {

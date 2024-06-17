@@ -26,7 +26,7 @@ public class NarratorInteractOnAwake : MonoBehaviour
             {
                 dog.gameObject.SetActive(false);
                 GameObject.Find("Player").GetComponent<Player>().deathIsGameOver = true;
-                //fisherman.GetComponent<FisherMan>().HealthPoint = 1000;
+                fisherman.GetComponent<FisherMan>().HealthPoint = 1000;
                 fisherman.GetComponent<FisherMan>().Damage = 40;
             }
         }

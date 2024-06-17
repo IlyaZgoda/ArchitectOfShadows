@@ -51,7 +51,10 @@ public class DigitalMag : Enemy
         obj.transform.GetComponent<Rigidbody2D>().AddForce(direction.normalized * laserSpeed, ForceMode2D.Impulse);
         obj.transform.localScale /= 3;
         obj.GetComponent<LaserTag>().Damage = Damage;
-        
+
+        var electricSound = Resources.Load<GameObject>("Prefabs/Sounds/Sound_Shoot");
+        GameObject sound = Instantiate(electricSound, transform.position, Quaternion.identity);
+
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

@@ -24,6 +24,9 @@ namespace Code.Gameplay.Interaction
                 obj.SetActive(true);
             }
 
+            var pickupSound = Resources.Load<GameObject>("Prefabs/Sounds/Sound_Pickup");
+            GameObject sound = Instantiate(pickupSound, transform.position, Quaternion.identity);
+
             gameObject.SetActive(false);
         }
 

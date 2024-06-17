@@ -35,11 +35,17 @@ namespace Code.Gameplay.Interaction
 
             if (Random.Range(0.0f, 1.0f) <= 0.35f)
             {
+                var rodSound = Resources.Load<GameObject>("Prefabs/Sounds/Sound_Rod");
+                GameObject sound = Instantiate(rodSound, transform.position, Quaternion.identity);
+
                 Debug.Log("лови аптечку");
                 await _healthFactory.CreateHealthPack(player.transform.position);
             }
             else
             {
+                var rodSound = Resources.Load<GameObject>("Prefabs/Sounds/Sound_Rod");
+                GameObject sound = Instantiate(rodSound, transform.position, Quaternion.identity);
+
                 noLuckAnimator.SetTrigger("Appear");
                 Debug.Log("лох...");
             }

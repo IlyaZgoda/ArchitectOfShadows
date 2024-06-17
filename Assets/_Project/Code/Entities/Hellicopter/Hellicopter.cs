@@ -64,7 +64,7 @@ public class Hellicopter : MonoBehaviour
     {
         Bomb();
         isAttack = false;
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(4f);
         flyOUT = true;
     }
 

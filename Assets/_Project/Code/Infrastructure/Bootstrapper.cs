@@ -35,6 +35,7 @@ namespace Code.Infrastructure
             _gameStateMachine.RegisterState(_stateFactory.Create<LoadLevelState>());
             _gameStateMachine.RegisterState(_stateFactory.Create<GameLoopState>());
             _gameStateMachine.RegisterState(_stateFactory.Create<CreditsState>());
+            _gameStateMachine.RegisterState(_stateFactory.Create<EndingState>());
         }
     }   
 }

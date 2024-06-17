@@ -43,12 +43,13 @@ public class Attack : MonoBehaviour
         return (current != null) ? current.gameObject : null;
     }
 
-    public static void Action(Vector2 point, float radius, float damage, bool allTargets, Animator weaponEffect)
+    public static void Action(Vector2 point, float radius, float damage, bool allTargets, Animator weaponEffect, GameObject smashSound)
     {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(point, radius);
 
         //Debug.Log(weaponEffect.gameObject.name);
         weaponEffect.SetTrigger("Smash");
+        Instantiate(smashSound, point, Quaternion.identity);
 
         if (!allTargets)
         {

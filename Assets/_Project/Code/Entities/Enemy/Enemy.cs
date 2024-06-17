@@ -30,6 +30,7 @@ public class Enemy : Health
         target = triggerArea.target;
         distance = (target.position - transform.position).magnitude;
         direction = target.position - transform.position;
+
     }
 
     public void startSettings()

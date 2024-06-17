@@ -1,9 +1,12 @@
 using Code.Gameplay.Healing;
 using Code.Gameplay.Interaction.Dialogues;
 using Code.Infrastructure;
+using Code.Infrastructure.States;
 using Code.Services.InteractionService;
 using Code.Services.Observable;
 using Code.Services.Windows;
+using Code.UI.Menu;
+using Infrastructure.States;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -18,6 +21,7 @@ public class Player : Health
 {
     [SerializeField] SpriteRenderer spriteRenderer;
     [SerializeField] Animator weaponEffect;
+    [SerializeField] GameObject smashSound;
     public float Speed = 5;             // �������� ������
     public float Damage = 10f;          // �����
     public float RadiusAttack = 0.63f;  // ������ ������� �����
@@ -71,11 +75,14 @@ public class Player : Health
     private Code.Services.Observable.EventBus _eventBus;
     private LoadingCurtain _loadingCurtain;
 
+    private GameStateMachine _gameStateMachine;
+
     [Inject]
-    public void Construct(Code.Services.Observable.EventBus eventBus, LoadingCurtain loadingCurtain)
+    public void Construct(Code.Services.Observable.EventBus eventBus, LoadingCurtain loadingCurtain, GameStateMachine gameStateMachine)
     {
         _eventBus = eventBus;
         _loadingCurtain = loadingCurtain;
+        _gameStateMachine = gameStateMachine;
     }
 
         
@@ -167,7 +174,7 @@ public class Player : Health
             if (Input.GetKeyDown(KeyCode.Mouse0))
             {
                 playerAnimation.Attack();
-                Attack.Action(weapon.position, RadiusAttack, Damage, Splash, weaponEffect);
+                Attack.Action(weapon.position, RadiusAttack, Damage, Splash, weaponEffect, smashSound);
                 wait.waitAttack = CoolDownTime.Cooldown(attackCooldown);
             }
         }
@@ -202,6 +209,11 @@ public class Player : Health
             {
                 Respawn();
             }
+        }
+
+        if (Input.GetKeyDown(KeyCode.J))
+        {
+            //Win();
         }
     }
 
@@ -264,6 +276,9 @@ public class Player : Health
     {
         if (!immortal)
         {
+            var electricSound = Resources.Load<GameObject>("Prefabs/Sounds/Sound_PlayerDamage");
+            GameObject sound = Instantiate(electricSound, transform.position, Quaternion.identity);
+
             HealthPoint -= damage;
             _eventBus.OnPlayerHealthChange(HealthPoint);
 
@@ -300,11 +315,30 @@ public class Player : Health
     public void GameOver()
     {
         Debug.Log("GAME OVER");
+        _gameStateMachine.Enter<EndingState, string>("GameOver");
     }
     public void Win()
     {
         Debug.Log("WIN");
         // В ИДЕАЛЕ ЗАДЕРЖКУ 3-5 СЕК А ТО ДАЖЕ АНИМАЦИЮ СМЕРТИ БОССА НЕ УВИДИМ
+
+        var enemies = GameObject.FindGameObjectsWithTag("Enemy");
+
+        foreach (GameObject enemy in enemies)
+        {
+            Destroy(enemy);
+        }
+
+        immortal = true;
+
+
+        StartCoroutine(GoToWinScene());
+    }
+
+    private IEnumerator GoToWinScene()
+    {
+        yield return new WaitForSeconds(3f);
+        _gameStateMachine.Enter<EndingState, string>("Win");
     }
 
     private void Death()

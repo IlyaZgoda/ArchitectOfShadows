@@ -64,6 +64,8 @@ public class CorruptedArchitect : MonoBehaviour
             var e = Instantiate(enemy2, GetSpawnPoint(spawnPoint), Quaternion.identity);
             e.GetComponent<DigitalMag>().Damage = 30;
         }
+        fightStarted = true;
+        delayBetweenStages = 1f;
     }
 
     private void Update()
@@ -95,8 +97,9 @@ public class CorruptedArchitect : MonoBehaviour
                     animator.SetTrigger("Attack 3"); break;
                 case CorruptedArchitectStage.Laser4:
                     animator.SetTrigger("Attack 4"); break;
-
             }
+            var lazerSound = Resources.Load<GameObject>("Prefabs/Sounds/Sound_SuperLazer");
+            GameObject sound = Instantiate(lazerSound, transform.position, Quaternion.identity);
         }
         if(stage == CorruptedArchitectStage.SpawnEnemies)
         {
@@ -135,6 +138,8 @@ public class CorruptedArchitect : MonoBehaviour
 
     public void TakeDamage()
     {
+        var electricSound = Resources.Load<GameObject>("Prefabs/Sounds/Sound_BossDamage");
+        GameObject sound = Instantiate(electricSound, transform.position, Quaternion.identity);
         health -= 1;
         if(health == 1)
         {
